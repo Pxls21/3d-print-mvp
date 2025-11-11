@@ -1,0 +1,28 @@
+Target Path,Source File,Directory,Description,Audience,Priority
+README.md,main-readme.md,Root,Main project documentation,Everyone,High
+PROJECT_OVERVIEW.md,project-overview.md,Root,Business strategy & technical overview,Stakeholders,High
+QUICK_START.md,quick-start-guide.md,Root,Setup instructions for Claude Code web & Fedora,Developers,High
+implementation-summary.md,implementation-summary.md,Root,Complete documentation summary,You (reference),High
+tasks/TASKS.md,comprehensive-tasks.md,tasks/,All 21 implementation tasks with Archon queries,Developers,Critical
+tasks/PHASE_1.md,To be created,tasks/,Week 1-2 detailed tasks,Developers,High
+tasks/PHASE_2.md,To be created,tasks/,Week 3-4 detailed tasks,Developers,High
+tasks/PHASE_3.md,To be created,tasks/,Week 5-6 detailed tasks,Developers,Medium
+tasks/PHASE_4.md,To be created,tasks/,Week 7-8 detailed tasks,Developers,Medium
+tasks/PHASE_5.md,To be created,tasks/,Week 9+ detailed tasks,Developers,Medium
+.claude/skills/README.md,skills-readme.md,.claude/skills/,Guide to using Claude Code skills,Developers,High
+.claude/skills/trellis-expert.md,To be created,.claude/skills/,TRELLIS API expertise & patterns,Claude Code,Critical
+.claude/skills/medusa-ecommerce.md,To be created,.claude/skills/,Medusa.js custom modules & services,Claude Code,Critical
+.claude/skills/security-expert.md,To be created,.claude/skills/,Zero-trust security patterns,Claude Code,High
+.claude/skills/testing-expert.md,To be created,.claude/skills/,Testing strategies & patterns,Claude Code,High
+docs/ARCHITECTURE.md,To be created,docs/,System architecture diagrams & decisions,Developers,High
+docs/DEPLOYMENT.md,To be created,docs/,Production deployment guide,DevOps,High
+docs/SECURITY.md,To be created,docs/,Security implementation details,Security,Critical
+docs/API.md,To be created,docs/,REST API reference,Developers,Medium
+.gitignore,Create manually,Root,Git ignore patterns,Git,High
+.env.example,Create manually,Root,Environment variable template,Deployment,Critical
+LICENSE,Create manually,Root,MIT License text,Legal,High
+scripts/setup.sh,To be created,scripts/,Automated setup script,Developers,High
+scripts/deploy.sh,To be created,scripts/,Deployment automation,DevOps,Medium
+scripts/test.sh,To be created,scripts/,Test runner script,Testing,Medium
+TROUBLESHOOTING.md,To be created,Root,Common issues & solutions,Support,Medium
+CONTRIBUTING.md,To be created,Root,Contribution guidelines,Community,Low
