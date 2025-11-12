@@ -341,17 +341,51 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed diagrams.
 
 ## 💰 Pricing & Business Model
 
-### R&D Platform Pricing
+### Subscription Options
 
-**Core Offering**: Scan-to-manufacture as a service
+**Choose your plan**: Scan processing only, or scan + materials bundle
 
-| Tier | What's Included | Price | Use Case |
-|------|-----------------|-------|----------|
-| **Basic FDM** | Scan processing + FDM printing | £X per scan | Hobbyists, quick prototypes |
-| **Professional SLS** | Scan + SLS printing + post-processing | £3X per scan | Engineers, functional testing |
-| **Precision CFC/CNC** | Scan + STEP export + machining consultation | £10X per scan | Product development, end-use |
+#### Option A: Scan Processing Only
 
-**Subscription Option**: Monthly membership with discounted per-scan rates
+| Tier | Monthly Quota | What's Included | Price/Month | Overage Rate | Rate Limit |
+|------|---------------|-----------------|-------------|--------------|------------|
+| **Starter** | 50 scans | COLMAP + Point2CAD processing (STEP + STL) | £29 | £0.60/scan | 5/day |
+| **Professional** | 200 scans | COLMAP + Point2CAD processing (STEP + STL) | £99 | £0.50/scan | 25/day |
+| **Enterprise** | 1000 scans | COLMAP + Point2CAD processing (STEP + STL) | £399 | £0.40/scan | Unlimited |
+
+**Then buy materials separately as needed**
+
+#### Option B: Scan + Materials Bundle (Best Value)
+
+| Tier | Scan Quota | Materials Included | Price/Month | Savings |
+|------|------------|-------------------|-------------|---------|
+| **Starter + Materials** | 50 scans | 2kg filament OR 1kg PA12 powder/month | £49 | ~£20/month |
+| **Professional + Materials** | 200 scans | 8kg filament OR 4kg PA12 OR 1x CF spool/month | £169 | ~£80/month |
+| **Enterprise + Materials** | 1000 scans | 20kg filament OR 10kg PA12 OR 3x CF spools/month | £599 | ~£250/month |
+
+**Bundle benefits**: Lower effective material cost + guaranteed allocation + tier discounts on additional purchases
+
+---
+
+### Material Shop (Separate Purchase)
+
+**Users buy spools in advance, no subscription needed if you have CAD files ready**
+
+| Material Type | Use With | Price | Yields (approx) | Tier Discount |
+|---------------|----------|-------|-----------------|---------------|
+| **Standard Filament (1kg)** | FDM | £20-30 | 5-10 small parts | 10% Pro, 15% Ent |
+| **PA12 Nylon Powder (2kg)** | SLS | £60-80 | 8-12 functional parts | 10% Pro, 15% Ent |
+| **Carbon Fiber Spool (500m)** | CFC | £150 | 3-5 composite parts | 10% Pro, 15% Ent |
+| **Standard Spool + CF Bundle** | CFC | £180 | 3-5 composite parts | 10% Pro, 15% Ent |
+| **CNC Material Stock** | CNC | Variable | Custom quote | 10% Pro, 15% Ent |
+
+**How it works**:
+1. **Scan** → Upload photos → Process to STL/STEP (uses subscription quota)
+2. **Buy Materials** → Purchase spools based on what you need
+3. **Queue Print** → FDM auto-queues, SLS/CFC/CNC scheduled
+4. **Collect** → Pick up finished parts
+
+**Alternative**: Already have CAD files? Skip step 1, buy materials, and just print!
 
 ### Cost Structure (per scan)
 
