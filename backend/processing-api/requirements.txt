@@ -31,6 +31,9 @@ cryptography==41.0.7
 httpx==0.25.2
 aiohttp==3.9.1
 
+# Bambu Lab Integration (MIT Licensed)
+bambulabs-api==2.8.0
+
 # Monitoring & Logging
 sentry-sdk==1.38.0
 python-json-logger==2.0.7

@@ -135,8 +135,9 @@ This document contains detailed equipment specifications, material costs (UK pri
 - 1kg filament → 5-10 small prototypes or 2-3 large parts
 
 **Integration**:
-- OctoPrint API for auto-queueing
+- Bambu Lab MQTT API for auto-queueing (MIT licensed Python library)
 - STL from COLMAP → Direct to print queue
+- Models: 2x Bambu Lab P1S printers
 
 ---
 

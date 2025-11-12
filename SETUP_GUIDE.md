@@ -30,7 +30,7 @@ Complete guide to set up and run the R&D Manufacturing Platform locally.
 
 # Optional (for local development)
 - NVIDIA GPU with CUDA support (for processing pipeline)
-- OctoPrint-enabled 3D printers (for FDM integration)
+- Bambu Lab 3D printers (for FDM integration)
 ```
 
 ### Check Installations
@@ -58,7 +58,7 @@ git --version
 │   │   ├── requirements.txt   # Python deps
 │   │   └── Dockerfile
 │   └── manufacturing/         # Manufacturing services
-│       ├── octoprint_service.py    # FDM integration
+│       ├── bambu_service.py        # FDM integration (Bambu Lab)
 │       └── workflow_manager.py     # Workflow management
 ├── frontend/
 │   └── storefront/            # Next.js user interface
@@ -257,10 +257,16 @@ R2_BUCKET_NAME=rd-platform
 STRIPE_SECRET_KEY=sk_test_xxxxx
 STRIPE_PUBLISHABLE_KEY=pk_test_xxxxx
 
-# OctoPrint (FDM Printers)
-OCTOPRINT_1_URL=http://192.168.1.100
-OCTOPRINT_1_API_KEY=your_api_key
-OCTOPRINT_1_NAME=Prusa i3 MK3S
+# Bambu Lab Printers (FDM)
+BAMBU_1_IP=192.168.1.100
+BAMBU_1_ACCESS_CODE=your_access_code
+BAMBU_1_SERIAL=your_printer_serial
+BAMBU_1_NAME=Bambu Lab P1S #1
+
+BAMBU_2_IP=192.168.1.101
+BAMBU_2_ACCESS_CODE=your_access_code
+BAMBU_2_SERIAL=your_printer_serial
+BAMBU_2_NAME=Bambu Lab P1S #2
 ```
 
 ### Cloudflare R2 Setup
@@ -280,11 +286,14 @@ OCTOPRINT_1_NAME=Prusa i3 MK3S
 2. Get API keys from Dashboard
 3. Add to `.env`
 
-### OctoPrint Setup (Optional - for FDM)
+### Bambu Lab Setup (Optional - for FDM)
 
-1. Install OctoPrint on your 3D printer
-2. Get API key from Settings → API
-3. Add printer details to `.env`
+1. Connect your Bambu Lab P1S printers to your network
+2. Enable LAN Mode in printer settings
+3. Get access code from printer (Settings → Network → LAN Mode)
+4. Find printer IP address and serial number
+5. Add printer details to `.env`
+6. Install Python library: `pip install bambulabs-api` (MIT licensed)
 
 ---
 
@@ -453,7 +462,7 @@ docker exec -it rd-platform-redis redis-cli
    - Set up processing pipeline
 
 2. **Set up Manufacturing Integration**
-   - Configure OctoPrint for FDM
+   - Configure Bambu Lab printers for FDM
    - Set up SLS printer integration
    - Configure CFC/CNC workflows
 
@@ -481,7 +490,7 @@ docker exec -it rd-platform-redis redis-cli
 
 - **Processing Pipeline**: GPU-intensive (COLMAP + Point2CAD) - Handle with desktop Claude Code
 - **Platform Backend**: FastAPI, Medusa.js, PostgreSQL, Redis - Built with web Claude Code
-- **Manufacturing**: OctoPrint, workflow management - Built with web Claude Code
+- **Manufacturing**: Bambu Lab API, workflow management - Built with web Claude Code
 - **Frontend**: Next.js storefront - Built with web Claude Code
 
 ---

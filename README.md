@@ -129,7 +129,7 @@ This is an **R&D platform** that enables rapid prototyping from concept to finis
 ### Manufacturing Integration
 | Machine Type | Interface | Automation Level |
 |--------------|-----------|------------------|
-| **FDM Printers** | OctoPrint API | Fully automated (STL → print) |
+| **FDM Printers** | Bambu Lab API (MQTT) | Fully automated (STL → print) |
 | **SLS Printers** | Custom integration | Semi-automated (STL + post-processing) |
 | **CFC Printers** | Manual + STEP export | Manual fiber planning required |
 | **CNC Machines** | Custom CAM interface | Manual toolpath planning required |
@@ -149,7 +149,7 @@ This is an **R&D platform** that enables rapid prototyping from concept to finis
 | **Storage** | Cloudflare R2 | ~$25/month | Multi-image uploads, outputs |
 | **CDN** | Cloudflare | Free | Asset delivery |
 | **Monitoring** | Sentry | Free tier | Error tracking |
-| **Manufacturing Queue** | Self-hosted | Included | OctoPrint + custom interfaces |
+| **Manufacturing Queue** | Self-hosted | Included | Bambu Lab API + custom interfaces |
 
 ---
 
@@ -278,7 +278,7 @@ Week 9+:   Launch (Beta testing, monitoring, iteration)
 │  4. Point2CAD CAD extraction (3-5 min)                    │
 │  5. Preview 3D model + get AI recommendations             │
 │  6. User chooses manufacturing method:                    │
-│     ├─ FDM: Auto-queue STL → OctoPrint                   │
+│     ├─ FDM: Auto-queue STL → Bambu Lab P1S               │
 │     ├─ SLS: Queue STL → Manual post-processing            │
 │     ├─ CFC: Export STEP → User refines → Queue            │
 │     └─ CNC: Export STEP → User plans CAM → Queue          │
@@ -321,7 +321,7 @@ Week 9+:   Launch (Beta testing, monitoring, iteration)
 │    └─ Dual export: STL (FDM/SLS) + STEP (CFC/CNC)        │
 │         ↓                                                  │
 │  Manufacturing Integration                                 │
-│    ├─ FDM: OctoPrint API → Auto-queue                    │
+│    ├─ FDM: Bambu Lab MQTT API → Auto-queue               │
 │    ├─ SLS: Custom queue + workflow                        │
 │    ├─ CFC: STEP export → Manual refinement                │
 │    └─ CNC: STEP export → CAM planning                     │
@@ -563,7 +563,7 @@ chore: Update dependencies
 - ✅ COLMAP + Point2CAD pipeline (8-14 min processing)
 - ✅ Multi-image upload (20-50 photos)
 - ✅ Dual output: STL (FDM) + STEP (CNC/CFC)
-- ✅ FDM integration via OctoPrint
+- ✅ FDM integration via Bambu Lab API (MIT licensed)
 - ✅ Basic 3D preview and project dashboard
 - ✅ Payment & project management (Medusa.js)
 - 🎯 **Launch**: FDM-only prototyping service

@@ -258,7 +258,7 @@ class FDMWorkflow:
 
     @staticmethod
     def can_auto_queue(job: ManufacturingJob) -> bool:
-        """Check if job can be auto-queued to OctoPrint"""
+        """Check if job can be auto-queued to Bambu Lab printers"""
         return (
             job.method == ManufacturingMethod.FDM
             and job.stl_url is not None
@@ -267,7 +267,7 @@ class FDMWorkflow:
 
     @staticmethod
     def prepare_for_printing(job: ManufacturingJob) -> Dict[str, Any]:
-        """Prepare job data for OctoPrint"""
+        """Prepare job data for Bambu Lab printers"""
         return {
             "job_id": job.job_id,
             "file_url": job.stl_url,

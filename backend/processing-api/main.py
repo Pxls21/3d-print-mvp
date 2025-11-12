@@ -428,10 +428,10 @@ async def create_manufacturing_job(mfg_request: ManufacturingJobCreate):
     processing_job["manufacturing_method"] = mfg_request.manufacturing_method
     processing_job["manufacturing_status"] = ManufacturingStatus.QUEUED
 
-    # Auto-queue for FDM
+    # Auto-queue for FDM (Bambu Lab)
     if mfg_request.manufacturing_method == ManufacturingMethod.FDM:
-        # TODO: Integrate with OctoPrint API
-        mfg_job["octoprint_job_id"] = "auto-queued-placeholder"
+        # TODO: Integrate with Bambu Lab API (bambulabs-api)
+        mfg_job["bambu_job_id"] = "auto-queued-placeholder"
         mfg_job["status"] = ManufacturingStatus.QUEUED
 
     return {

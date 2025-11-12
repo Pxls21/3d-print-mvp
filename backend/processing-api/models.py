@@ -198,7 +198,7 @@ class ManufacturingJob(Base):
     machine_name = Column(String, nullable=True)
 
     # Integration IDs
-    octoprint_job_id = Column(String, nullable=True)  # For FDM
+    bambu_job_id = Column(String, nullable=True)  # For FDM (Bambu Lab)
     external_job_id = Column(String, nullable=True)  # For SLS/CFC/CNC
 
     # User notes
@@ -264,9 +264,10 @@ class Machine(Base):
     build_volume_y = Column(Float, nullable=True)  # mm
     build_volume_z = Column(Float, nullable=True)  # mm
 
-    # Integration
-    octoprint_url = Column(String, nullable=True)
-    octoprint_api_key = Column(String, nullable=True)
+    # Integration (Bambu Lab)
+    bambu_ip = Column(String, nullable=True)
+    bambu_access_code = Column(String, nullable=True)
+    bambu_serial = Column(String, nullable=True)
 
     # Stats
     total_jobs_completed = Column(Integer, default=0)

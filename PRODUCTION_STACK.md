@@ -232,7 +232,7 @@ At 100 models/month:
 
 | Method | Description | Automation Level | Output Format | Platform Integration |
 |--------|-------------|------------------|---------------|---------------------|
-| **FDM** | Fused Deposition Modeling | Fully automated | STL | OctoPrint API (auto-queue) |
+| **FDM** | Fused Deposition Modeling | Fully automated | STL | Bambu Lab MQTT API (auto-queue) |
 | **SLS** | Selective Laser Sintering | Semi-automated | STL | Custom queue + post-processing |
 | **CFC** | Continuous Fiber Composite | Manual refinement | STEP | STEP export + fiber planning |
 | **CNC** | CNC Machining | Manual refinement | STEP | STEP export + CAM assistance |
@@ -243,7 +243,7 @@ At 100 models/month:
 ```
 COLMAP → Point2CAD → STEP → Mesh conversion → STL (validated, print-ready)
                                                 ↓
-                                        FDM: Auto-queue to OctoPrint
+                                        FDM: Auto-queue to Bambu Lab P1S
                                         SLS: Queue + post-processing workflow
 ```
 
@@ -273,7 +273,7 @@ User uploads scan → COLMAP processing (5-8 min) → Point2CAD (3-5 min)
       FDM             SLS             CFC             CNC          Just Download│
         │               │               │               │                  │   │
   Auto-queue    Queue + manual   Export STEP    Export STEP        STEP + STL │
-  (OctoPrint)   post-process     User refines   User CAM plans              │   │
+  (Bambu Lab)   post-process     User refines   User CAM plans              │   │
         │               │         fiber paths    toolpaths                  │   │
         ↓               ↓               ↓               ↓                  ↓   │
   Same day        1-2 days        2-3 days        1-2 days           No mfg │

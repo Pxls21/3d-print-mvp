@@ -116,7 +116,7 @@ Rapid prototyping from concept to physical part is fragmented and slow:
 - **Features**: Order management, payment processing, admin dashboard
 
 #### Manufacturing Queue Management
-- **FDM**: OctoPrint API integration (fully automated)
+- **FDM**: Bambu Lab MQTT API integration (fully automated)
 - **SLS**: Custom queue with post-processing workflow
 - **CFC**: Manual queue with STEP file export and consultation
 - **CNC**: Manual queue with CAM planning assistance
