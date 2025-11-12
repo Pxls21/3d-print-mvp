@@ -3,28 +3,64 @@ R&D Platform - Processing Orchestration API
 FastAPI service for managing scan jobs, GPU processing, and manufacturing workflows
 """
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from enum import Enum
 import asyncio
 from datetime import datetime
 import uuid
+import os
+
+# Import security middleware
+from security import (
+    verify_token,
+    verify_admin,
+    optional_auth,
+    AuthUser,
+    SecurityHeadersMiddleware,
+    RateLimitMiddleware,
+    FileValidator,
+    AuditLogger,
+    get_client_ip
+)
 
 app = FastAPI(
     title="R&D Platform Processing API",
     description="Orchestrates COLMAP + Point2CAD processing and manufacturing workflows",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs" if os.getenv("ENVIRONMENT") == "development" else None,  # Disable docs in production
+    redoc_url="/redoc" if os.getenv("ENVIRONMENT") == "development" else None,
 )
 
-# CORS middleware
+# ============================================================================
+# SECURITY MIDDLEWARE CONFIGURATION
+# ============================================================================
+
+# 1. Trusted Host Middleware - Prevent host header injection
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=ALLOWED_HOSTS
+)
+
+# 2. Security Headers Middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 3. Rate Limiting Middleware
+app.add_middleware(RateLimitMiddleware)
+
+# 4. CORS Middleware - Restrict to whitelisted origins
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure for production
+    allow_origins=ALLOWED_ORIGINS,  # Only whitelisted origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicit methods only
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # Explicit headers
+    max_age=600,  # Cache preflight for 10 minutes
 )
 
 # ============================================================================
@@ -259,10 +295,28 @@ async def health_check():
 
 @app.post("/jobs/create", response_model=ProcessingJobResponse)
 async def create_processing_job(
+    request: Request,
     job_request: ProcessingJobCreate,
-    background_tasks: BackgroundTasks
+    background_tasks: BackgroundTasks,
+    user: AuthUser = Depends(verify_token)
 ):
-    """Create a new processing job"""
+    """Create a new processing job (requires authentication)"""
+
+    # Verify user_id matches authenticated user
+    if job_request.user_id != user.user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Cannot create jobs for other users"
+        )
+
+    # Audit log
+    await AuditLogger.log_event(
+        event_type="job_created",
+        user_id=user.user_id,
+        ip_address=get_client_ip(request),
+        endpoint="/jobs/create",
+        details={"project_id": job_request.project_id, "image_count": job_request.image_count}
+    )
 
     # Check quota
     quota = check_user_quota(job_request.user_id, job_request.subscription_tier)
@@ -305,17 +359,34 @@ async def create_processing_job(
     return ProcessingJobResponse(**job_data)
 
 @app.get("/jobs/{job_id}", response_model=ProcessingJobResponse)
-async def get_job_status(job_id: str):
-    """Get processing job status"""
+async def get_job_status(
+    job_id: str,
+    user: AuthUser = Depends(verify_token)
+):
+    """Get processing job status (requires authentication)"""
 
     if job_id not in jobs_db:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    return ProcessingJobResponse(**jobs_db[job_id])
+    job = jobs_db[job_id]
+
+    # Verify user owns this job (or is admin)
+    if job["user_id"] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    return ProcessingJobResponse(**job)
 
 @app.get("/jobs/user/{user_id}", response_model=List[ProcessingJobResponse])
-async def get_user_jobs(user_id: str, limit: int = 50):
-    """Get all jobs for a user"""
+async def get_user_jobs(
+    user_id: str,
+    limit: int = 50,
+    user: AuthUser = Depends(verify_token)
+):
+    """Get all jobs for a user (requires authentication)"""
+
+    # Verify user can only access their own jobs (unless admin)
+    if user_id != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
 
     user_jobs = [
         ProcessingJobResponse(**job)
@@ -329,13 +400,21 @@ async def get_user_jobs(user_id: str, limit: int = 50):
     return user_jobs[:limit]
 
 @app.delete("/jobs/{job_id}")
-async def cancel_job(job_id: str):
-    """Cancel a processing job"""
+async def cancel_job(
+    request: Request,
+    job_id: str,
+    user: AuthUser = Depends(verify_token)
+):
+    """Cancel a processing job (requires authentication)"""
 
     if job_id not in jobs_db:
         raise HTTPException(status_code=404, detail="Job not found")
 
     job = jobs_db[job_id]
+
+    # Verify user owns this job (or is admin)
+    if job["user_id"] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
 
     if job["status"] in [JobStatus.COMPLETED, JobStatus.FAILED, JobStatus.CANCELLED]:
         raise HTTPException(
@@ -346,22 +425,46 @@ async def cancel_job(job_id: str):
     job["status"] = JobStatus.CANCELLED
     job["completed_at"] = datetime.now()
 
+    # Audit log
+    await AuditLogger.log_event(
+        event_type="job_cancelled",
+        user_id=user.user_id,
+        ip_address=get_client_ip(request),
+        endpoint=f"/jobs/{job_id}",
+        details={"job_id": job_id}
+    )
+
     return {"message": "Job cancelled successfully", "job_id": job_id}
 
 @app.get("/quota/{user_id}", response_model=QuotaStatus)
-async def get_user_quota(user_id: str, tier: SubscriptionTier):
-    """Get user's current quota status"""
+async def get_user_quota(
+    user_id: str,
+    tier: SubscriptionTier,
+    user: AuthUser = Depends(verify_token)
+):
+    """Get user's current quota status (requires authentication)"""
+
+    # Verify user can only access their own quota (unless admin)
+    if user_id != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
 
     return check_user_quota(user_id, tier)
 
 @app.post("/manufacturing/recommend", response_model=ManufacturingRecommendation)
-async def get_manufacturing_recommendation(job_id: str):
-    """Get AI recommendation for manufacturing method based on geometry analysis"""
+async def get_manufacturing_recommendation(
+    job_id: str,
+    user: AuthUser = Depends(verify_token)
+):
+    """Get AI recommendation for manufacturing method based on geometry analysis (requires authentication)"""
 
     if job_id not in jobs_db:
         raise HTTPException(status_code=404, detail="Job not found")
 
     job = jobs_db[job_id]
+
+    # Verify user owns this job (or is admin)
+    if job["user_id"] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
 
     if job["status"] != JobStatus.COMPLETED:
         raise HTTPException(
@@ -395,13 +498,25 @@ async def get_manufacturing_recommendation(job_id: str):
     )
 
 @app.post("/manufacturing/create", response_model=Dict[str, Any])
-async def create_manufacturing_job(mfg_request: ManufacturingJobCreate):
-    """Create a manufacturing job (FDM/SLS/CFC/CNC)"""
+async def create_manufacturing_job(
+    request: Request,
+    mfg_request: ManufacturingJobCreate,
+    user: AuthUser = Depends(verify_token)
+):
+    """Create a manufacturing job (FDM/SLS/CFC/CNC) (requires authentication)"""
 
     if mfg_request.processing_job_id not in jobs_db:
         raise HTTPException(status_code=404, detail="Processing job not found")
 
     processing_job = jobs_db[mfg_request.processing_job_id]
+
+    # Verify user owns the processing job
+    if processing_job["user_id"] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Verify user_id matches authenticated user
+    if mfg_request.user_id != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Cannot create jobs for other users")
 
     if processing_job["status"] != JobStatus.COMPLETED:
         raise HTTPException(
@@ -434,6 +549,19 @@ async def create_manufacturing_job(mfg_request: ManufacturingJobCreate):
         mfg_job["bambu_job_id"] = "auto-queued-placeholder"
         mfg_job["status"] = ManufacturingStatus.QUEUED
 
+    # Audit log
+    await AuditLogger.log_event(
+        event_type="manufacturing_job_created",
+        user_id=user.user_id,
+        ip_address=get_client_ip(request),
+        endpoint="/manufacturing/create",
+        details={
+            "mfg_job_id": mfg_job_id,
+            "method": mfg_request.manufacturing_method.value,
+            "processing_job_id": mfg_request.processing_job_id
+        }
+    )
+
     return {
         "mfg_job_id": mfg_job_id,
         "status": mfg_job["status"],
@@ -442,17 +570,38 @@ async def create_manufacturing_job(mfg_request: ManufacturingJobCreate):
     }
 
 @app.get("/manufacturing/{mfg_job_id}")
-async def get_manufacturing_status(mfg_job_id: str):
-    """Get manufacturing job status"""
+async def get_manufacturing_status(
+    mfg_job_id: str,
+    user: AuthUser = Depends(verify_token)
+):
+    """Get manufacturing job status (requires authentication)"""
 
     if mfg_job_id not in manufacturing_db:
         raise HTTPException(status_code=404, detail="Manufacturing job not found")
 
-    return manufacturing_db[mfg_job_id]
+    mfg_job = manufacturing_db[mfg_job_id]
+
+    # Verify user owns this job (or is admin)
+    if mfg_job["user_id"] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    return mfg_job
 
 @app.get("/stats/dashboard")
-async def get_dashboard_stats():
-    """Get dashboard statistics for admin"""
+async def get_dashboard_stats(
+    request: Request,
+    admin: AuthUser = Depends(verify_admin)
+):
+    """Get dashboard statistics (admin only)"""
+
+    # Audit log
+    await AuditLogger.log_event(
+        event_type="admin_dashboard_accessed",
+        user_id=admin.user_id,
+        ip_address=get_client_ip(request),
+        endpoint="/stats/dashboard",
+        details={}
+    )
 
     total_jobs = len(jobs_db)
     completed_jobs = len([j for j in jobs_db.values() if j["status"] == JobStatus.COMPLETED])
