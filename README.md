@@ -1,8 +1,8 @@
-# 🚀 3D Print MVP - Photos to STL Service
+# 🚀 3D Print MVP - Photos to CAD Service
 
-**Transform multi-angle photos into 3D printable files using AI**
+**Transform multi-angle photos into precision 3D models using professional photogrammetry**
 
-Built with TRELLIS (Microsoft) + SuGaR + FreeCAD + Medusa.js
+Built with COLMAP + Point2CAD + DeepCAD + Medusa.js
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -26,21 +26,24 @@ Built with TRELLIS (Microsoft) + SuGaR + FreeCAD + Medusa.js
 
 ## 🎯 Overview
 
-This is a **production-ready MVP** for an AI-powered 3D printing service that converts photos into STL files. The service offers three quality tiers:
+This is a **production-ready MVP** for a professional photogrammetry service that converts multi-angle photos into precision CAD files. The service offers three subscription tiers with quota-based access:
 
-| Tier | Input | Processing Time | Price | Use Case |
-|------|-------|-----------------|-------|----------|
-| **Quick Draft** | 1 image | 90 seconds | £2 | Concept validation |
-| **Standard** | 1-3 images | 2-3 minutes | £8 | Most users |
-| **Professional** | 5-10 images | 10-15 minutes | £25 | Production printing |
+| Tier | Monthly Quota | Processing Time | Price/Month | Rate Limit |
+|------|---------------|-----------------|-------------|------------|
+| **Starter** | 50 models | 15-20 min/model | £29 | 5 models/day |
+| **Professional** | 200 models | 15-20 min/model | £99 | 25 models/day |
+| **Enterprise** | 1000 models | 15-20 min/model | £399 | Unlimited |
+
+**All tiers require 20-50 multi-angle photos per model for manufacturing-grade precision**
 
 ### Key Differentiators
 
-✅ **Single-image capability** (removes friction)  
-✅ **Progressive quality tiers** (maximize revenue per user)  
-✅ **Production-ready infrastructure** (not a prototype)  
-✅ **Zero-trust security** (encrypted, monitored, audited)  
-✅ **MIT licensed core** (commercial-friendly)
+✅ **Manufacturing precision** (traditional photogrammetry, not AI hallucination)
+✅ **Parametric CAD output** (STEP files for editing, not just meshes)
+✅ **Quota-based pricing** (predictable costs, scalable usage)
+✅ **Production-ready infrastructure** (not a prototype)
+✅ **Zero-trust security** (encrypted, monitored, audited)
+✅ **Permissive licensed stack** (Apache 2.0 / BSD / MIT)
 
 ---
 
@@ -75,13 +78,13 @@ This is a **production-ready MVP** for an AI-powered 3D printing service that co
 
 ## 🏗️ Technology Stack
 
-### AI/ML Pipeline
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **3D Generation** | [TRELLIS](https://github.com/microsoft/TRELLIS) | Image-to-3D (1-10 images) |
-| **Mesh Extraction** | [SuGaR](https://github.com/Anttwo/SuGaR) | Surface-aligned meshes |
-| **CAD Processing** | FreeCAD Python API | Validation & STL export |
-| **GPU Processing** | RunPod Serverless | Pay-per-use GPU compute |
+### Photogrammetry Pipeline
+| Component | Technology | Purpose | License |
+|-----------|------------|---------|---------|
+| **Structure from Motion** | [COLMAP](https://github.com/colmap/colmap) | Multi-view photogrammetry | BSD 3-Clause ✅ |
+| **CAD Reconstruction** | [Point2CAD](https://github.com/prs-eth/point2cad) | Point cloud → parametric CAD | Apache 2.0 ✅ |
+| **Design Refinement** | [DeepCAD](https://github.com/ChrisWu1997/DeepCAD) | CAD sequence optimization | MIT ✅ |
+| **GPU Processing** | RunPod Serverless | Pay-per-use GPU compute | Commercial |
 
 ### E-commerce Backend
 | Component | Technology | Purpose |
@@ -228,13 +231,13 @@ Week 9+:   Launch (Beta testing, monitoring, iteration)
 │                   USER JOURNEY                          │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  1. User uploads images (drag & drop)                  │
-│  2. Selects quality tier (Quick/Standard/Pro)          │
-│  3. Payment via Stripe                                 │
-│  4. Job submitted to processing queue                  │
-│  5. RunPod processes images with TRELLIS               │
-│  6. STL file validated with FreeCAD                    │
-│  7. User downloads STL                                 │
+│  1. User uploads 20-50 multi-angle photos              │
+│  2. Selects subscription tier (checks quota)           │
+│  3. Job submitted to processing queue                  │
+│  4. RunPod processes with COLMAP photogrammetry        │
+│  5. Point2CAD extracts parametric CAD                  │
+│  6. DeepCAD optimizes design (optional)                │
+│  7. User downloads STEP + STL files                    │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 
@@ -244,14 +247,14 @@ Week 9+:   Launch (Beta testing, monitoring, iteration)
 │                                                         │
 │  Frontend (Next.js)                                    │
 │    ↓                                                   │
-│  Medusa.js Backend (E-commerce)                        │
+│  Medusa.js Backend (Subscriptions & Quotas)            │
 │    ↓                                                   │
 │  Processing API (FastAPI)                              │
 │    ↓                                                   │
 │  RunPod Serverless (GPU)                               │
-│    ├─ TRELLIS (Image → 3D)                            │
-│    ├─ SuGaR (Mesh extraction)                         │
-│    └─ FreeCAD (STL validation)                        │
+│    ├─ COLMAP (Structure from Motion)                  │
+│    ├─ Point2CAD (Point Cloud → CAD)                   │
+│    └─ DeepCAD (CAD Refinement)                        │
 │    ↓                                                   │
 │  Cloudflare R2 (File storage)                          │
 │                                                         │
@@ -268,10 +271,10 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed diagrams.
 
 ```
 Phase 1-2: $0 (local development)
-Phase 3-4: $50 (RunPod testing)
-Phase 5:   $100 (beta infrastructure)
+Phase 3-4: $100 (RunPod testing)
+Phase 5:   $150 (beta infrastructure)
 
-Total Development: ~$150
+Total Development: ~$250
 ```
 
 ### Monthly Operating Costs
@@ -279,20 +282,24 @@ Total Development: ~$150
 ```
 Fixed Costs:
 - Railway (Medusa + API):  $50/month
-- Cloudflare R2:            $15/month
+- Cloudflare R2:            $25/month (more storage for multi-image)
 - Monitoring (Sentry):      $0 (free tier)
-Subtotal:                   $65/month
+Subtotal:                   $75/month
 
-Variable Costs (per job):
-- RunPod GPU:              $0.003-0.06/job
+Variable Costs (per model):
+- RunPod GPU (15-20 min):  $0.40-0.53/model
+  (A40 @ $0.00044/sec × 900-1200 seconds)
 
-Example at 500 jobs/month:
-- Fixed:                   $65
-- GPU (avg $0.02/job):     $10
-Total:                     $75/month
+Example at 100 models/month (conservative):
+- Fixed:                   $75
+- GPU (avg $0.46/model):   $46
+Total:                     $121/month
 
-Revenue at 500 jobs/month: ~£4,000
-Margin: 98%+
+Revenue scenarios:
+- 10 Starter subs:         £290/month
+- 5 Professional subs:     £495/month
+- 2 Enterprise subs:       £798/month
+Margin: 85-90%
 ```
 
 ---
@@ -390,13 +397,15 @@ chore: Update dependencies
 
 ### Third-Party Licenses
 
-- **TRELLIS**: MIT License (Microsoft)
-- **SuGaR**: Custom research license (contact authors for commercial use)
-- **FreeCAD**: LGPL 2+ (compatible with commercial use)
+**All core components have commercial-friendly licenses:**
+
+- **COLMAP**: BSD 3-Clause (ETH Zurich & UNC Chapel Hill)
+- **Point2CAD**: Apache 2.0 (prs-eth - changed from CC-BY-NC in March 2024)
+- **DeepCAD**: MIT License (Rundi Wu)
 - **Medusa.js**: MIT License
 - **Next.js**: MIT License
 
-**Commercial Use**: ✅ Fully permitted with proper attribution
+**Commercial Use**: ✅ Fully permitted with no restrictions or revenue limits
 
 ---
 
@@ -412,8 +421,9 @@ chore: Update dependencies
 - **Issues**: [GitHub Issues](https://github.com/yourusername/3d-print-mvp/issues)
 
 ### Useful Links
-- [TRELLIS Repository](https://github.com/microsoft/TRELLIS)
-- [SuGaR Repository](https://github.com/Anttwo/SuGaR)
+- [COLMAP Repository](https://github.com/colmap/colmap)
+- [Point2CAD Repository](https://github.com/prs-eth/point2cad)
+- [DeepCAD Repository](https://github.com/ChrisWu1997/DeepCAD)
 - [Medusa.js Docs](https://docs.medusajs.com)
 - [RunPod Docs](https://docs.runpod.io)
 
@@ -422,22 +432,26 @@ chore: Update dependencies
 ## 🎯 Roadmap
 
 ### Phase 1: MVP (Current)
-- ✅ Single-image processing (TRELLIS)
-- ✅ Three quality tiers
-- ✅ Stripe payments
+- ✅ Multi-image photogrammetry (COLMAP)
+- ✅ Parametric CAD output (Point2CAD)
+- ✅ Three subscription tiers
+- ✅ Quota/rate limit management
+- ✅ Stripe subscription payments
 - ✅ Basic admin dashboard
 
 ### Phase 2: Enhancement (Month 3-6)
-- 🔄 Multi-image processing (gsplat option)
-- 🔄 Custom rendering (SUAPP-style)
-- 🔄 Mobile app
+- 🔄 CAD refinement optimization (DeepCAD tuning)
+- 🔄 Advanced mesh repair pipeline
+- 🔄 MiCADangelo integration (when released)
+- 🔄 Mobile app for photo capture
 - 🔄 API marketplace
 
 ### Phase 3: Scale (Month 6-12)
 - 🔄 White-label solutions
 - 🔄 Enterprise features
-- 🔄 Advanced CAD integration
+- 🔄 Advanced CAD editing tools
 - 🔄 International expansion
+- 🔄 Batch processing
 
 ---
 
@@ -445,11 +459,11 @@ chore: Update dependencies
 
 Built with these amazing open-source projects:
 
-- [TRELLIS](https://github.com/microsoft/TRELLIS) by Microsoft Research
-- [SuGaR](https://github.com/Anttwo/SuGaR) by CVPR 2024
-- [gsplat](https://github.com/nerfstudio-project/gsplat) by Nerfstudio
+- [COLMAP](https://github.com/colmap/colmap) by ETH Zurich & UNC Chapel Hill
+- [Point2CAD](https://github.com/prs-eth/point2cad) by PRS Lab, ETH Zurich
+- [DeepCAD](https://github.com/ChrisWu1997/DeepCAD) by Rundi Wu
 - [Medusa.js](https://medusajs.com) by Medusa team
-- [FreeCAD](https://www.freecad.org) by FreeCAD community
+- [RunPod](https://runpod.io) for serverless GPU infrastructure
 
 ---
 

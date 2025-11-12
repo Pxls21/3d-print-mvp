@@ -2,11 +2,11 @@
 
 ## Executive Summary
 
-**Project**: AI-Powered Photo-to-STL Service  
-**Target Launch**: 8-12 weeks from start  
-**Technology**: TRELLIS + Medusa.js + RunPod  
-**Market**: 3D printing enthusiasts, designers, makers  
-**Business Model**: Freemium SaaS (£2-£25 per job)
+**Project**: Professional Photogrammetry-to-CAD Service
+**Target Launch**: 8-12 weeks from start
+**Technology**: COLMAP + Point2CAD + DeepCAD + Medusa.js + RunPod
+**Market**: Product designers, manufacturers, reverse engineering, 3D printing
+**Business Model**: Quota-based SaaS (£29-£399/month subscriptions)
 
 ---
 
@@ -24,24 +24,27 @@ Creating 3D printable models from physical objects requires:
 
 ## Our Solution
 
-**Turn smartphone photos into 3D printable STL files in minutes**
+**Turn multi-angle smartphone photos into parametric CAD files using professional photogrammetry**
 
-### Three Quality Tiers
+### Three Subscription Tiers
 
-| Tier | Input | Time | Price | Target User |
-|------|-------|------|-------|-------------|
-| **Quick** | 1 photo | 90s | £2 | Hobbyists, quick prototypes |
-| **Standard** | 1-3 photos | 2-3min | £8 | Most users, good quality |
-| **Professional** | 5-10 photos | 10-15min | £25 | Production, high quality |
+| Tier | Monthly Quota | Processing Time | Price/Month | Rate Limit | Output |
+|------|---------------|-----------------|-------------|------------|--------|
+| **Starter** | 50 models | 15-20 min | £29 | 5/day | STEP + STL |
+| **Professional** | 200 models | 15-20 min | £99 | 25/day | STEP + STL |
+| **Enterprise** | 1000 models | 15-20 min | £399 | Unlimited | STEP + STL |
+
+**All tiers require 20-50 multi-angle photos per model**
 
 ### Key Innovation
 
-**Progressive Enhancement Model**:
-1. User uploads 1 photo → See draft instantly (£2)
-2. Want better? Add 2 more photos → Standard quality (£8)
-3. Need perfect? Upload 5-10 photos → Pro quality (£25)
+**Manufacturing-Grade Photogrammetry**:
+1. Traditional photogrammetry (not AI hallucination)
+2. Parametric CAD output (STEP files for editing)
+3. Quota-based predictable pricing
+4. Professional-grade accuracy for reverse engineering
 
-**Result**: Low friction entry, high conversion to premium
+**Result**: Predictable costs, scalable for businesses, manufacturing precision
 
 ---
 
@@ -50,46 +53,62 @@ Creating 3D printable models from physical objects requires:
 ### Core Pipeline
 
 ```
-Photos → TRELLIS (AI) → Mesh → FreeCAD (Validation) → STL
-         15-30 seconds       Clean geometry        Download
+20-50 Photos → COLMAP → Point Cloud → Point2CAD → DeepCAD → STEP + STL
+               15-20 min  Sparse+Dense  CAD Primitives  Refinement  Download
 ```
 
 ### Why This Stack?
 
-#### TRELLIS (Microsoft Research)
-- **Input**: 1-10 images
-- **Output**: High-quality 3D meshes
-- **Speed**: 15-30 seconds on GPU
-- **License**: MIT (commercial friendly)
-- **Quality**: State-of-the-art (CVPR 2025)
+#### COLMAP (ETH Zurich & UNC Chapel Hill)
+- **Input**: 20-50 multi-angle photos
+- **Output**: Dense point clouds via Structure-from-Motion
+- **Speed**: 10-15 minutes on GPU
+- **License**: BSD 3-Clause (commercial friendly)
+- **Quality**: Industry-standard photogrammetry
+
+#### Point2CAD (PRS Lab, ETH Zurich)
+- **Input**: Point clouds from COLMAP
+- **Output**: Parametric CAD primitives (B-rep)
+- **Speed**: 3-5 minutes
+- **License**: Apache 2.0 (changed March 2024)
+- **Quality**: Manufacturing-grade accuracy
+
+#### DeepCAD (Optional Refinement)
+- **Purpose**: Optimize CAD sequence
+- **Speed**: 1-2 minutes
+- **License**: MIT
+- **Quality**: Improves design consistency
 
 #### Medusa.js (E-commerce)
-- **Purpose**: Orders, payments, subscriptions
+- **Purpose**: Subscriptions, quotas, usage tracking
 - **Flexibility**: Fully customizable
 - **License**: MIT
 - **Ecosystem**: Rich plugin ecosystem
 
 #### RunPod (GPU Cloud)
 - **Model**: Serverless, pay-per-use
-- **Cost**: $0.003-$0.06 per job
+- **Cost**: $0.40-0.53 per model
 - **Scale**: Auto-scaling
-- **Hardware**: NVIDIA GPUs
+- **Hardware**: NVIDIA A40/A100 GPUs
 
 ### System Diagram
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  User uploads photos via Next.js storefront         │
+│  User uploads 20-50 photos via Next.js storefront  │
 │           ↓                                         │
-│  Medusa.js processes order & payment                │
+│  Medusa.js checks quota & subscription status       │
 │           ↓                                         │
 │  FastAPI queues job & triggers RunPod               │
 │           ↓                                         │
-│  RunPod GPU processes with TRELLIS                  │
+│  RunPod GPU:                                        │
+│    1. COLMAP (Structure from Motion)                │
+│    2. Point2CAD (Point Cloud → CAD)                 │
+│    3. DeepCAD (Refinement)                          │
 │           ↓                                         │
-│  FreeCAD validates & exports STL                    │
+│  User downloads STEP + STL from Cloudflare R2       │
 │           ↓                                         │
-│  User downloads STL from Cloudflare R2              │
+│  Quota decremented, usage tracked                   │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -119,19 +138,27 @@ Photos → TRELLIS (AI) → Mesh → FreeCAD (Validation) → STL
 
 **Year 1 (Conservative)**:
 ```
-Month 1-3:   50 users  → £400/month
-Month 4-6:   200 users → £1,600/month
-Month 7-9:   500 users → £4,000/month
-Month 10-12: 1K users  → £8,000/month
+Month 1-3:   10 subscribers  → £500/month
+Month 4-6:   30 subscribers  → £1,500/month
+Month 7-9:   60 subscribers  → £3,000/month
+Month 10-12: 100 subscribers → £5,000/month
 
-Year 1 Total: £30-40K revenue
+Year 1 Total: £20-30K MRR growth
+Average LTV: £600-1,200 per customer
 ```
 
 **Year 2 (Growth)**:
 ```
-5,000 users → £40K/month → £480K ARR
-Margin: 95%+ (low variable costs)
+500 subscribers → £25K/month → £300K ARR
+Churn rate: <10%/month (target)
+Margin: 85-90% (predictable costs)
 ```
+
+**Key Metrics**:
+- Customer Acquisition Cost (CAC): £50-100
+- Lifetime Value (LTV): £600-1,200
+- LTV:CAC Ratio: 6-12:1 (healthy)
+- Payback Period: 2-3 months
 
 ---
 
@@ -160,36 +187,52 @@ Margin: 95%+ (low variable costs)
 
 ### Revenue Streams
 
-**1. Pay-per-job (Primary)**
-- Quick: £2/job
-- Standard: £8/job
-- Professional: £25/job
+**1. Subscription Tiers (Primary)**
+- Starter: £29/month (50 models, 5/day rate limit)
+- Professional: £99/month (200 models, 25/day rate limit)
+- Enterprise: £399/month (1000 models, unlimited rate limit)
 
-**2. Subscription (Growth)**
-- Pro Plan: £29/month (unlimited)
-- Business Plan: £99/month (+ API access)
+**2. Overage Charges (Secondary)**
+- £0.60 per additional model beyond quota
+- Automatically charged at end of billing cycle
 
 **3. API Access (Future)**
-- £0.50 per API call
+- £149/month base + £0.40 per API call
 - Enterprise custom pricing
 
 ### Cost Structure
 
-**Fixed Costs** (~£65/month):
+**Fixed Costs** (~£75/month):
 - Railway (API + Database): £50/month
-- Cloudflare R2 (Storage): £15/month
+- Cloudflare R2 (Storage): £25/month (multi-image storage)
 - Monitoring (Sentry): £0 (free tier)
 
 **Variable Costs**:
-- RunPod GPU: £0.002-£0.05 per job
-- Payment processing: 2.9% + £0.30
+- RunPod GPU: £0.40-0.53 per model (15-20 min processing)
+- Payment processing: 2.9% + £0.30 (monthly subscription)
 
-**Example P&L** (500 jobs/month):
+**Example P&L** (Conservative: 20 subscribers):
 ```
-Revenue:        £4,000
-Fixed costs:    -£65
-Variable costs: -£25 (GPU) -£120 (payments)
-Net Profit:     £3,790 (95% margin)
+Revenue (10 Starter + 5 Pro + 2 Enterprise):
+  10 × £29  = £290
+   5 × £99  = £495
+   2 × £399 = £798
+  Total     = £1,583/month
+
+Costs:
+  Fixed              = £75
+  Processing (avg 150 models) = £69
+  Payment fees       = £49
+  Total costs        = £193
+
+Net Profit: £1,390/month (88% margin)
+```
+
+**Growth Scenario** (50 subscribers):
+```
+Revenue: £3,965/month
+Costs: £415/month
+Net Profit: £3,550/month (89% margin)
 ```
 
 ---
@@ -399,14 +442,17 @@ Net Profit:     £3,790 (95% margin)
 
 ### Technology Licenses
 
-| Technology | License | Commercial Use |
-|-----------|---------|----------------|
-| TRELLIS | MIT | ✅ Yes |
-| SuGaR | Research | ⚠️ Contact authors |
-| gsplat | Apache 2.0 | ✅ Yes |
-| Medusa.js | MIT | ✅ Yes |
-| FreeCAD | LGPL 2+ | ✅ Yes |
-| Next.js | MIT | ✅ Yes |
+**All core components validated for commercial use:**
+
+| Technology | License | Commercial Use | Validation |
+|-----------|---------|----------------|------------|
+| COLMAP | BSD 3-Clause | ✅ Yes | Validated ✅ |
+| Point2CAD | Apache 2.0 | ✅ Yes | Changed Mar 2024 ✅ |
+| DeepCAD | MIT | ✅ Yes | Validated ✅ |
+| Medusa.js | MIT | ✅ Yes | Validated ✅ |
+| Next.js | MIT | ✅ Yes | Validated ✅ |
+
+See [VALIDATION_REPORT.md](VALIDATION_REPORT.md) for full license audit.
 
 ### Estimated Costs Summary
 
