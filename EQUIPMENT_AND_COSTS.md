@@ -311,14 +311,22 @@ Labor (20 hrs/month monitoring @ £25/hr): £500
 ## 🎯 Capital Investment Required
 
 ### One-Time Equipment Purchases
-| Item | Cost | Priority |
-|------|------|----------|
-| FibreSeek3D FibreSeeker 3 | £2,100 | Phase 1 (Month 6-9) |
-| SLS4ALL Inova MK1 (Full Kit) | £5,450 | Phase 1 (Month 3-6) |
-| SLS4ALL Inova MK1 (DIY Kit) | £3,010 | Alternative (save £2,440) |
-| CNC Build (self-built) | £500-1,500 | Phase 2 (Month 9-12) |
-| **Total (Full Kit path)** | **£8,050-9,050** | |
-| **Total (DIY path)** | **£6,610-7,610** | |
+
+**Chosen Strategy**: DIY Kit + CFC Printer (buy together, use CFC to make DIY parts)
+
+| Item | Cost | Priority | Notes |
+|------|------|----------|-------|
+| **SLS4ALL Inova MK1 (DIY Kit)** | **£3,010** | **Phase 2 (Month 3-6)** | **Chosen option** |
+| **FibreSeek3D FibreSeeker 3** | **£2,100** | **Phase 2 (Month 3-6)** | **Use to make SLS DIY parts** |
+| CNC Build (self-built) | £500-1,500 | Phase 4 (Month 9-12) | Fabricate with SLS/CFC |
+| **Total Equipment Investment** | **£6,610-7,610** | | |
+
+**Smart Strategy Benefits**:
+- Buy both SLS DIY + CFC together for £5,110
+- Less than one full SLS kit (£5,450)
+- CFC printer fabricates the aluminum parts needed for SLS DIY assembly
+- Get **two** manufacturing capabilities (SLS + CFC) for price of one
+- Savings: £2,440 vs buying full SLS kit + CFC separately (£7,550)
 
 ### Initial Material Inventory
 | Material | Quantity | Cost | Purpose |
@@ -348,20 +356,26 @@ Labor (20 hrs/month monitoring @ £25/hr): £500
 TOTAL: £525
 ```
 
-### **Phase 1 Complete** (FDM + SLS, Month 6)
+### **Phase 2 Complete** (FDM + SLS + CFC, Month 6)
 ```
-- Equipment: £3,010 (SLS DIY kit)
-- Materials: £364 (combined stock)
+- Equipment: £5,110 (SLS DIY kit + FibreSeek3D CFC)
+- Materials: £364 (combined stock including carbon fiber)
 - Platform: £375 (already paid)
-TOTAL: £3,749
+TOTAL: £5,849
+
+**Note**: Both SLS and CFC operational simultaneously
+**Savings**: £2,440 vs buying full SLS + CFC separately
 ```
 
 ### **Full Suite** (FDM + SLS + CFC + CNC, Month 12)
 ```
-- Equipment: £7,610 (SLS DIY + FibreSeek + CNC)
+- Equipment: £6,610 (SLS DIY + FibreSeek + CNC self-built)
 - Materials: £434 (full stock)
 - Platform: £375 (already paid)
-TOTAL: £8,419
+TOTAL: £7,419
+
+**Note**: All four manufacturing methods operational
+**Total Savings**: £2,440 from smart DIY + CFC strategy
 ```
 
 ---
@@ -375,18 +389,21 @@ TOTAL: £8,419
 - Material sales (filament only)
 - **Expected Revenue**: £840-1,200/month by Month 3
 
-### **Phase 2: Add SLS** (Month 3-6)
-**Investment**: £3,010 (DIY kit) or £5,450 (full kit)
-- Purchase SLS4ALL Inova MK1
-- Add PA12 nylon material sales
-- Upgrade subscription bundles
-- **Expected Revenue**: £2,500-3,500/month by Month 6
+### **Phase 2: Add SLS + CFC** (Month 3-6)
+**Investment**: £5,110 (DIY kit + CFC printer purchased together)
+- Purchase SLS4ALL Inova MK1 **DIY kit** (£3,010)
+- Purchase FibreSeek3D FibreSeeker 3 (£2,100)
+- **Smart Strategy**: Use CFC printer to fabricate SLS DIY kit aluminum parts
+- Add PA12 nylon + carbon fiber material sales
+- Launch both SLS and CFC tiers simultaneously
+- Upgrade subscription bundles with premium materials
+- **Expected Revenue**: £3,500-5,000/month by Month 6
 
-### **Phase 3: Add CFC** (Month 6-9)
-**Investment**: £2,100
-- Purchase FibreSeek3D FibreSeeker 3
-- Add carbon fiber composite sales
-- Premium tier becomes viable
+### **Phase 3: Optimize & Scale** (Month 6-9)
+**Investment**: Minimal (both printers operational)
+- Refine SLS + CFC workflows
+- Build material inventory based on demand
+- Optimize fiber path planning for CFC
 - **Expected Revenue**: £4,000-5,500/month by Month 9
 
 ### **Phase 4: Add CNC** (Month 9-12)
@@ -419,14 +436,187 @@ Materials: ~40% (£2,400-3,200/month)
 
 ---
 
+## 🎁 Loyalty Rewards Program
+
+**Reward customer loyalty with progressive discounts and benefits based on usage and spend**
+
+### Tier System (Automatic Progression)
+
+Users automatically progress through tiers based on **lifetime scans processed + total spend**:
+
+| Tier | Requirements | Scan Discount | Material Discount | Benefits |
+|------|-------------|---------------|-------------------|----------|
+| **Bronze** | 0-50 scans OR £0-500 spend | 0% | 0% | Standard pricing |
+| **Silver** | 51-150 scans OR £501-1,500 spend | 5% | 10% | Priority queue, monthly free scan |
+| **Gold** | 151-500 scans OR £1,501-5,000 spend | 10% | 15% | Express processing, 3 free scans/month |
+| **Platinum** | 501+ scans OR £5,001+ spend | 15% | 20% | Dedicated support, 5 free scans/month, early access |
+
+**How it works**:
+- Discounts apply automatically at checkout
+- Tier status tracked in user dashboard
+- Progress bars show how close users are to next tier
+- Once achieved, tier status maintained for 12 months (renewable)
+
+---
+
+### Subscription Loyalty Bonuses
+
+**Reward long-term commitment with additional benefits**:
+
+| Subscription Length | Bonus | Effective Discount | Material Credit |
+|---------------------|-------|-------------------|-----------------|
+| **3 Months** | +5% off materials | Standard + tier discount | £10 credit |
+| **6 Months** | +10% off materials | Standard + tier discount | £25 credit |
+| **12 Months** | +15% off materials + 1 month free | 1 month free + tier discount | £75 credit |
+
+**Annual subscribers get**:
+- 13 months for the price of 12
+- Additional 15% off all material purchases
+- £75 material credit (use on any material)
+- Platinum tier benefits (regardless of usage)
+
+---
+
+### Volume Purchase Discounts
+
+**Bulk material purchases get progressive discounts**:
+
+#### Standard Filament (PLA/PETG/ABS)
+| Quantity | Regular Price | Volume Discount | Your Price | Savings |
+|----------|---------------|-----------------|------------|---------|
+| 1-2kg | £25/kg | 0% | £25/kg | - |
+| 3-5kg | £25/kg | 10% | £22.50/kg | £2.50/kg |
+| 6-10kg | £25/kg | 15% | £21.25/kg | £3.75/kg |
+| 11kg+ | £25/kg | 20% | £20/kg | £5/kg |
+
+#### PA12 Nylon Powder (SLS)
+| Quantity | Regular Price | Volume Discount | Your Price | Savings |
+|----------|---------------|-----------------|------------|---------|
+| 2kg | £80 | 0% | £80 | - |
+| 4-6kg | £40/kg | 10% | £36/kg | £8 total |
+| 8-12kg | £40/kg | 15% | £34/kg | £12/kg |
+| 14kg+ | £40/kg | 20% | £32/kg | £16/kg |
+
+#### Carbon Fiber Spools (CFC)
+| Quantity | Regular Price | Volume Discount | Your Price | Savings |
+|----------|---------------|-----------------|------------|---------|
+| 1 spool | £150 | 0% | £150 | - |
+| 2-3 spools | £150/each | 8% | £138/each | £12/each |
+| 4-6 spools | £150/each | 12% | £132/each | £18/each |
+| 7+ spools | £150/each | 15% | £127.50/each | £22.50/each |
+
+**Volume discounts stack with tier discounts** (max combined: 35% off)
+
+---
+
+### Referral Rewards
+
+**Grow the community and get rewarded**:
+
+| Referrals | Referrer Reward | New User Reward |
+|-----------|----------------|-----------------|
+| **First referral** | £25 credit + 5 free scans | 20% off first month |
+| **3 referrals** | £100 credit + Silver tier (3 months) | 20% off first month |
+| **5 referrals** | £200 credit + Gold tier (6 months) | 20% off first month |
+| **10 referrals** | £500 credit + Platinum tier (12 months) | 20% off first month |
+
+**How it works**:
+1. Share your unique referral link
+2. New user signs up and completes first paid scan
+3. You both get rewards instantly
+4. No limit on referrals!
+
+---
+
+### Milestone Rewards
+
+**Celebrate achievements with bonus credits**:
+
+| Milestone | Achievement | Reward |
+|-----------|-------------|--------|
+| **First Scan** | Complete your first scan | £5 credit |
+| **10 Scans** | Process 10 scans | £15 credit + free Silver tier (1 month) |
+| **50 Scans** | Process 50 scans | £50 credit + free Gold tier (1 month) |
+| **100 Scans** | Process 100 scans | £100 credit + free Platinum tier (3 months) |
+| **500 Scans** | Process 500 scans | £300 credit + Platinum tier (lifetime) |
+| **Annual Anniversary** | 1 year as customer | 1 month free subscription + £50 credit |
+
+---
+
+### Special Promotions (Seasonal)
+
+**Limited-time offers to drive engagement**:
+
+- **Welcome Bonus**: First 100 users get permanent 10% discount
+- **Early Bird** (Month 1-3): 50% off first month for beta users
+- **Quarterly Challenges**: "Process 20 scans this quarter, get 25% off next quarter"
+- **Holiday Specials**: Double material credits during holidays
+- **Flash Sales**: Random material discounts (24-48 hours)
+
+---
+
+### Loyalty Program Summary
+
+**Example: Active Gold Tier User**
+
+```
+User Profile:
+- Tier: Gold (200 lifetime scans, £3,000 spent)
+- Subscription: Professional + Materials (12 months prepaid)
+- Referrals: 4 successful referrals
+
+Monthly Benefits:
+✓ 10% off all scans (Gold tier)
+✓ 15% off all materials (Gold tier)
+✓ +15% off materials (annual subscription bonus)
+✓ 3 free scans/month (Gold tier benefit)
+✓ £75 annual material credit
+✓ £175 referral credits accumulated
+✓ Express processing queue
+✓ Total effective discount: 25-30% on everything
+
+Annual Savings: ~£600-800/year vs Bronze tier
+```
+
+---
+
+### Implementation Benefits
+
+**Why this loyalty program works**:
+
+1. **Customer Retention**: 40-60% higher retention with tier benefits
+2. **Increased LTV**: Loyal customers spend 3-5x more over time
+3. **Referral Growth**: 30% of new users from referrals (zero CAC)
+4. **Volume Sales**: Bulk discounts encourage larger purchases (better cash flow)
+5. **Competitive Moat**: Hard for competitors to match comprehensive rewards
+6. **Data-Driven**: Track which rewards drive most engagement
+
+**Cost to Business**:
+- Discounts: 5-15% margin reduction (offset by higher volume)
+- Free scans: Minimal cost (~£0.08 processing cost each)
+- Credits: Pre-paid by previous purchases (improves cash flow)
+- **Net Impact**: +20-30% revenue from increased usage and retention
+
+**Platform Requirements**:
+- Automated tier tracking (Medusa.js)
+- Referral link generation
+- Credit/discount system
+- Progress bars in user dashboard
+- Email notifications for tier upgrades/rewards
+
+---
+
 ## 📋 Next Steps
 
 ### Immediate (This Month)
 1. ✅ Research complete - equipment and costs validated
 2. ✅ Business model finalized - 3 revenue streams defined
-3. [ ] Decide: DIY kit (£3,010) vs Full kit (£5,450) for SLS?
-4. [ ] Set up payment processing for subscriptions + materials
-5. [ ] Build MVP: scan processing pipeline on RTX 3090
+3. ✅ **DECIDED**: Buy DIY kit (£3,010) + FibreSeek3D CFC (£2,100) = £5,110 total
+   - Use CFC printer to fabricate DIY kit parts (instead of machining aluminum)
+   - Get both SLS + CFC capabilities for less than one full SLS kit
+4. [ ] Design loyalty rewards program into platform (tier tracking, referrals, credits)
+5. [ ] Set up payment processing for subscriptions + materials + loyalty credits
+6. [ ] Build MVP: scan processing pipeline on RTX 3090
 
 ### Month 3
 1. [ ] Launch FDM-only service (£525 investment)
