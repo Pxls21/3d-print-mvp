@@ -1,0 +1,239 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # DATABASE
+  # ============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: rd-platform-postgres
+    environment:
+      POSTGRES_DB: rd_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rd-platform-network
+
+  # ============================================================================
+  # REDIS (Cache & Job Queue)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: rd-platform-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rd-platform-network
+
+  # ============================================================================
+  # MEDUSA.JS BACKEND
+  # ============================================================================
+  medusa:
+    build:
+      context: ../backend/medusa
+      dockerfile: Dockerfile
+    container_name: rd-platform-medusa
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/rd_platform
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET:-supersecret}
+      COOKIE_SECRET: ${COOKIE_SECRET:-supersecret}
+      STORE_CORS: http://localhost:3000,http://localhost:8000
+      ADMIN_CORS: http://localhost:7001
+    ports:
+      - "9000:9000"  # API
+      - "7001:7001"  # Admin UI
+    volumes:
+      - ../backend/medusa:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - rd-platform-network
+    command: npm run dev
+
+  # ============================================================================
+  # PROCESSING API (FastAPI)
+  # ============================================================================
+  processing-api:
+    build:
+      context: ../backend/processing-api
+      dockerfile: Dockerfile
+    container_name: rd-platform-processing-api
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/rd_platform
+      REDIS_URL: redis://redis:6379
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME:-rd-platform}
+      GPU_SERVER_URL: ${GPU_SERVER_URL:-http://localhost:8001}
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../backend/processing-api:/app
+      - processing_temp:/tmp/processing
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - rd-platform-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ============================================================================
+  # CELERY WORKER (Background Jobs)
+  # ============================================================================
+  celery-worker:
+    build:
+      context: ../backend/processing-api
+      dockerfile: Dockerfile
+    container_name: rd-platform-celery-worker
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/rd_platform
+      REDIS_URL: redis://redis:6379
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME:-rd-platform}
+      GPU_SERVER_URL: ${GPU_SERVER_URL:-http://localhost:8001}
+    volumes:
+      - ../backend/processing-api:/app
+      - processing_temp:/tmp/processing
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - rd-platform-network
+    command: celery -A celery_worker worker --loglevel=info
+
+  # ============================================================================
+  # FLOWER (Celery Monitoring)
+  # ============================================================================
+  flower:
+    build:
+      context: ../backend/processing-api
+      dockerfile: Dockerfile
+    container_name: rd-platform-flower
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379
+      FLOWER_PORT: 5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery-worker
+    networks:
+      - rd-platform-network
+    command: celery -A celery_worker flower --port=5555
+
+  # ============================================================================
+  # NEXT.JS STOREFRONT
+  # ============================================================================
+  storefront:
+    build:
+      context: ../frontend/storefront
+      dockerfile: Dockerfile
+    container_name: rd-platform-storefront
+    environment:
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_STRIPE_KEY: ${NEXT_PUBLIC_STRIPE_KEY}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend/storefront:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - medusa
+      - processing-api
+    networks:
+      - rd-platform-network
+    command: npm run dev
+
+  # ============================================================================
+  # PGADMIN (Database Management UI - Optional)
+  # ============================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: rd-platform-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - rd-platform-network
+    profiles:
+      - dev-tools
+
+  # ============================================================================
+  # MINIO (S3-compatible storage for local dev - Alternative to R2)
+  # ============================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: rd-platform-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9001:9001"  # Console
+      - "9002:9000"  # API
+    volumes:
+      - minio_data:/data
+    networks:
+      - rd-platform-network
+    command: server /data --console-address ":9001"
+    profiles:
+      - dev-tools
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  processing_temp:
+    driver: local
+  pgadmin_data:
+    driver: local
+  minio_data:
+    driver: local
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  rd-platform-network:
+    driver: bridge
