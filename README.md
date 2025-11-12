@@ -1,8 +1,10 @@
-# 🚀 3D Print MVP - Photos to CAD Service
+# 🚀 R&D Platform - Scan to Manufacturing Service
 
-**Transform multi-angle photos into precision 3D models using professional photogrammetry**
+**Transform multi-angle photos into manufactured prototypes using professional photogrammetry**
 
-Built with COLMAP + Point2CAD + DeepCAD + Medusa.js
+**Your complete rapid prototyping solution:** Scan → Process → Manufacture with FDM, SLS, CFC, and CNC
+
+Built with COLMAP + Point2CAD + Medusa.js
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -26,23 +28,37 @@ Built with COLMAP + Point2CAD + DeepCAD + Medusa.js
 
 ## 🎯 Overview
 
-This is a **production-ready MVP** for a professional photogrammetry service that converts multi-angle photos into precision CAD files. The service offers three subscription tiers with quota-based access:
+This is an **R&D platform** that enables rapid prototyping from concept to finished part. Users scan prototypes with a smartphone camera, and our platform handles everything from 3D reconstruction to manufacturing with FDM, SLS, CFC printers, and CNC machines.
 
-| Tier | Monthly Quota | Processing Time | Price/Month | Rate Limit |
-|------|---------------|-----------------|-------------|------------|
-| **Starter** | 50 models | 15-20 min/model | £29 | 5 models/day |
-| **Professional** | 200 models | 15-20 min/model | £99 | 25 models/day |
-| **Enterprise** | 1000 models | 15-20 min/model | £399 | Unlimited |
+### Manufacturing Methods Available
 
-**All tiers require 20-50 multi-angle photos per model for manufacturing-grade precision**
+| Method | Use Case | Turnaround | Quality | Best For |
+|--------|----------|------------|---------|----------|
+| **FDM** | Quick prototypes | Same day | Prototype | Form/fit testing, visual mockups |
+| **SLS** | Functional parts | 1-2 days | Functional | Engineering validation, assembly testing |
+| **CFC** | End-use parts | 2-3 days | Production | Fiber-reinforced components, final products |
+| **CNC** | Precision parts | 1-2 days | Precision | Machined components, tight tolerances |
+
+**All scans require 20-50 multi-angle photos for manufacturing-grade precision**
+
+### Complete Workflow
+
+```
+1. Scan your prototype with phone camera (20-50 images)
+2. Upload to platform → COLMAP + Point2CAD processing (8-14 min)
+3. Review 3D preview and get AI manufacturing recommendations
+4. Choose method: FDM (fast) → SLS (functional) → CFC (end-use) → CNC (precision)
+5. Receive manufactured part
+```
 
 ### Key Differentiators
 
+✅ **One scan, multiple manufacturing options** (FDM/SLS/CFC/CNC from single scan)
 ✅ **Manufacturing precision** (traditional photogrammetry, not AI hallucination)
-✅ **Parametric CAD output** (STEP files for editing, not just meshes)
-✅ **Quota-based pricing** (predictable costs, scalable usage)
-✅ **Production-ready infrastructure** (not a prototype)
-✅ **Zero-trust security** (encrypted, monitored, audited)
+✅ **Parametric CAD output** (STEP files for CNC/CFC, STL for FDM/SLS)
+✅ **AI manufacturing recommendations** (platform suggests optimal method)
+✅ **Integrated workflow** (from scan to finished part in one platform)
+✅ **R&D focused** (rapid iteration and prototyping)
 ✅ **Permissive licensed stack** (Apache 2.0 / BSD / MIT)
 
 ---
@@ -50,21 +66,31 @@ This is a **production-ready MVP** for a professional photogrammetry service tha
 ## ⚡ Features
 
 ### User Features
-- 📸 **Drag-and-drop image upload**
-- 🎨 **Three quality tiers**
-- ⏱️ **Real-time processing status**
-- 📥 **Instant STL download**
-- 💳 **Stripe payment integration**
-- 🔐 **Secure file storage**
-- 📊 **Usage dashboard**
+- 📸 **Multi-image upload** (20-50 photos from smartphone)
+- 🤖 **AI manufacturing recommendations** (platform suggests optimal method)
+- 🎨 **3D preview** (inspect before manufacturing)
+- 🏭 **Multiple manufacturing methods** (FDM/SLS/CFC/CNC)
+- ⏱️ **Real-time processing status** (track scan → manufacture)
+- 📥 **STEP + STL download** (editable CAD for CNC/CFC, printable STL for FDM/SLS)
+- 💳 **Flexible pricing** (pay per scan or subscription)
+- 📊 **Project dashboard** (track all prototypes)
+
+### Manufacturing Integration
+- 🖨️ **FDM auto-queue** (ready STL sent directly to printer)
+- 🔬 **SLS with cleanup** (automated post-processing workflow)
+- 💪 **CFC with fiber planning** (STEP export for manual refinement)
+- ⚙️ **CNC with CAM** (STEP + toolpath planning assistance)
+- 📏 **Dimensional analysis** (automatic measurement and tolerance checking)
+- 🎯 **Printability validation** (pre-flight checks before manufacturing)
 
 ### Admin Features
 - 📈 **Real-time monitoring dashboard**
-- 👥 **User management**
-- 💰 **Revenue analytics**
-- 🛠️ **Job queue management**
+- 🏭 **Machine status tracking** (FDM/SLS/CFC/CNC availability)
+- 👥 **User & project management**
+- 💰 **Revenue analytics by manufacturing method**
+- 🛠️ **Job queue management across all machines**
 - ⚠️ **Error tracking (Sentry)**
-- 📊 **Cost tracking**
+- 📊 **Manufacturing cost tracking**
 
 ### Technical Features
 - 🚀 **Serverless GPU processing** (RunPod)
@@ -78,22 +104,35 @@ This is a **production-ready MVP** for a professional photogrammetry service tha
 
 ## 🏗️ Technology Stack
 
-### Photogrammetry Pipeline
-| Component | Technology | Purpose | License |
-|-----------|------------|---------|---------|
-| **Structure from Motion** | [COLMAP](https://github.com/colmap/colmap) | Multi-view photogrammetry | BSD 3-Clause ✅ |
-| **CAD Reconstruction** | [Point2CAD](https://github.com/prs-eth/point2cad) | Point cloud → parametric CAD | Apache 2.0 ✅ |
-| **Design Refinement** | [DeepCAD](https://github.com/ChrisWu1997/DeepCAD) | CAD sequence optimization | MIT ✅ |
-| **GPU Processing** | RunPod Serverless | Pay-per-use GPU compute | Commercial |
+### Photogrammetry Pipeline (Manufacturing-Grade)
+| Component | Technology | Purpose | License | Processing Time |
+|-----------|------------|---------|---------|-----------------|
+| **Structure from Motion** | [COLMAP](https://github.com/colmap/colmap) | Multi-view photogrammetry (20-50 images) | BSD 3-Clause ✅ | 5-8 min |
+| **CAD Reconstruction** | [Point2CAD](https://github.com/prs-eth/point2cad) | Point cloud → parametric CAD (STEP) | Apache 2.0 ✅ | 3-5 min |
+| **GPU Infrastructure** | NVIDIA RTX 3090 (24GB VRAM) | Local processing (50-80 scans/day) | Hardware | **Total: 8-14 min** |
 
-### E-commerce Backend
+**Why this stack?**
+- ✅ **COLMAP over Meshroom**: Faster (30-50%), better CLI automation, BSD license
+- ✅ **Manufacturing precision**: Traditional photogrammetry, not AI hallucination
+- ✅ **Dual output**: STL for FDM/SLS (auto-ready), STEP for CNC/CFC (manual refinement)
+- ✅ **RTX 3090 capacity**: 4-6 scans/hour, 50-80 scans/day at 50% utilization
+
+### Platform Backend
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| **E-commerce** | [Medusa.js](https://medusajs.com) | Orders, payments, subscriptions |
-| **Processing API** | FastAPI | Job orchestration |
-| **Database** | PostgreSQL | Data persistence |
-| **Cache/Queue** | Redis | Job queue & caching |
-| **Storage** | Cloudflare R2 | S3-compatible file storage |
+| **E-commerce & Billing** | [Medusa.js](https://medusajs.com) | Orders, payments, project management |
+| **Processing API** | FastAPI | Job orchestration & manufacturing queue |
+| **Database** | PostgreSQL | Projects, scans, manufacturing jobs |
+| **Cache/Queue** | Redis | Job queue & real-time status |
+| **Storage** | Cloudflare R2 | Multi-image uploads, STEP/STL storage |
+
+### Manufacturing Integration
+| Machine Type | Interface | Automation Level |
+|--------------|-----------|------------------|
+| **FDM Printers** | OctoPrint API | Fully automated (STL → print) |
+| **SLS Printers** | Custom integration | Semi-automated (STL + post-processing) |
+| **CFC Printers** | Manual + STEP export | Manual fiber planning required |
+| **CNC Machines** | Custom CAM interface | Manual toolpath planning required |
 
 ### Frontend
 | Component | Technology | Purpose |
@@ -103,12 +142,14 @@ This is a **production-ready MVP** for a professional photogrammetry service tha
 | **Hosting** | Vercel | Edge deployment |
 
 ### Infrastructure
-| Component | Service | Cost |
-|-----------|---------|------|
-| **API Hosting** | Railway | ~$50/month |
-| **GPU Processing** | RunPod | ~$50-200/month (pay-per-use) |
-| **CDN** | Cloudflare | Free |
-| **Monitoring** | Sentry | Free tier |
+| Component | Service | Cost | Purpose |
+|-----------|---------|------|---------|
+| **GPU Processing** | Local RTX 3090 | Hardware cost | COLMAP + Point2CAD processing |
+| **API Hosting** | Railway / VPS | ~$50/month | FastAPI + Medusa.js |
+| **Storage** | Cloudflare R2 | ~$25/month | Multi-image uploads, outputs |
+| **CDN** | Cloudflare | Free | Asset delivery |
+| **Monitoring** | Sentry | Free tier | Error tracking |
+| **Manufacturing Queue** | Self-hosted | Included | OctoPrint + custom interfaces |
 
 ---
 
@@ -224,82 +265,135 @@ Week 9+:   Launch (Beta testing, monitoring, iteration)
 
 ## 🏛️ Architecture
 
-### High-Level Overview
+### Complete User Journey (Scan to Manufactured Part)
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                   USER JOURNEY                          │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  1. User uploads 20-50 multi-angle photos              │
-│  2. Selects subscription tier (checks quota)           │
-│  3. Job submitted to processing queue                  │
-│  4. RunPod processes with COLMAP photogrammetry        │
-│  5. Point2CAD extracts parametric CAD                  │
-│  6. DeepCAD optimizes design (optional)                │
-│  7. User downloads STEP + STL files                    │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│                   USER WORKFLOW                            │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  1. User scans prototype (phone camera, 20-50 images)     │
+│  2. Upload to platform → Processing queue                 │
+│  3. COLMAP reconstruction (5-8 min on RTX 3090)           │
+│  4. Point2CAD CAD extraction (3-5 min)                    │
+│  5. Preview 3D model + get AI recommendations             │
+│  6. User chooses manufacturing method:                    │
+│     ├─ FDM: Auto-queue STL → OctoPrint                   │
+│     ├─ SLS: Queue STL → Manual post-processing            │
+│     ├─ CFC: Export STEP → User refines → Queue            │
+│     └─ CNC: Export STEP → User plans CAM → Queue          │
+│  7. Part manufactured and delivered                        │
+│                                                            │
+│  Total Time:                                               │
+│  - Scanning: 5-10 min (user)                              │
+│  - Processing: 8-14 min (automated)                       │
+│  - FDM: 4-8 hours (same day)                              │
+│  - SLS: 1-2 days                                           │
+│  - CFC: 2-3 days (with user CAD work)                     │
+│  - CNC: 1-2 days (with user CAM work)                     │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+```
 
-┌─────────────────────────────────────────────────────────┐
-│                 TECHNICAL ARCHITECTURE                  │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Frontend (Next.js)                                    │
-│    ↓                                                   │
-│  Medusa.js Backend (Subscriptions & Quotas)            │
-│    ↓                                                   │
-│  Processing API (FastAPI)                              │
-│    ↓                                                   │
-│  RunPod Serverless (GPU)                               │
-│    ├─ COLMAP (Structure from Motion)                  │
-│    ├─ Point2CAD (Point Cloud → CAD)                   │
-│    └─ DeepCAD (CAD Refinement)                        │
-│    ↓                                                   │
-│  Cloudflare R2 (File storage)                          │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+### Technical Architecture
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                   PLATFORM STACK                           │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  Frontend (Next.js 14)                                     │
+│    - Multi-image upload (20-50 photos)                    │
+│    - 3D preview (Three.js)                                │
+│    - Manufacturing method selection                        │
+│    - Project dashboard                                     │
+│         ↓                                                  │
+│  Platform Backend (Medusa.js + FastAPI)                   │
+│    - Project & scan management                             │
+│    - Manufacturing queue orchestration                     │
+│    - Billing & payments                                    │
+│    - Machine availability tracking                         │
+│         ↓                                                  │
+│  Processing Server (RTX 3090)                              │
+│    ├─ COLMAP (Structure from Motion)    [5-8 min]        │
+│    ├─ Point2CAD (CAD Reconstruction)    [3-5 min]        │
+│    ├─ Mesh validation & repair                            │
+│    └─ Dual export: STL (FDM/SLS) + STEP (CFC/CNC)        │
+│         ↓                                                  │
+│  Manufacturing Integration                                 │
+│    ├─ FDM: OctoPrint API → Auto-queue                    │
+│    ├─ SLS: Custom queue + workflow                        │
+│    ├─ CFC: STEP export → Manual refinement                │
+│    └─ CNC: STEP export → CAM planning                     │
+│         ↓                                                  │
+│  File Storage (Cloudflare R2)                              │
+│    - Multi-image uploads                                   │
+│    - STEP files (for CFC/CNC)                             │
+│    - STL files (for FDM/SLS)                              │
+│    - Manufacturing outputs                                 │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
 ```
 
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed diagrams.
 
 ---
 
-## 💰 Cost Breakdown
+## 💰 Pricing & Business Model
 
-### Development Costs
+### R&D Platform Pricing
+
+**Core Offering**: Scan-to-manufacture as a service
+
+| Tier | What's Included | Price | Use Case |
+|------|-----------------|-------|----------|
+| **Basic FDM** | Scan processing + FDM printing | £X per scan | Hobbyists, quick prototypes |
+| **Professional SLS** | Scan + SLS printing + post-processing | £3X per scan | Engineers, functional testing |
+| **Precision CFC/CNC** | Scan + STEP export + machining consultation | £10X per scan | Product development, end-use |
+
+**Subscription Option**: Monthly membership with discounted per-scan rates
+
+### Cost Structure (per scan)
 
 ```
-Phase 1-2: $0 (local development)
-Phase 3-4: $100 (RunPod testing)
-Phase 5:   $150 (beta infrastructure)
+Processing Costs:
+- GPU time (8-14 min on RTX 3090):  Amortized hardware cost
+- Storage (300MB avg):               $0.01
+- API/infrastructure:                $0.02
+Total Processing:                    ~$0.05/scan
 
-Total Development: ~$250
+Manufacturing Costs (your estimates):
+- FDM material + time:               ~$X
+- SLS material + time:               ~$3X
+- CFC material + time + labor:       ~$8X
+- CNC material + time + labor:       ~$10X
+
+Platform Margins:
+- FDM tier: 40-50% margin
+- SLS tier: 45-55% margin
+- CFC/CNC tier: 35-45% margin (includes consultation)
 ```
 
-### Monthly Operating Costs
+### Revenue Model
 
 ```
-Fixed Costs:
-- Railway (Medusa + API):  $50/month
-- Cloudflare R2:            $25/month (more storage for multi-image)
-- Monitoring (Sentry):      $0 (free tier)
-Subtotal:                   $75/month
+Monthly Projections (50% capacity):
+- 25 scans/day × 22 working days = 550 scans/month
 
-Variable Costs (per model):
-- RunPod GPU (15-20 min):  $0.40-0.53/model
-  (A40 @ $0.00044/sec × 900-1200 seconds)
+Conservative mix:
+- 60% FDM (330 scans):        £XXXk
+- 30% SLS (165 scans):        £XXXk
+- 10% CFC/CNC (55 scans):     £XXXk
+Total Monthly Revenue:         £XXk/month
 
-Example at 100 models/month (conservative):
-- Fixed:                   $75
-- GPU (avg $0.46/model):   $46
-Total:                     $121/month
+Costs:
+- Fixed infrastructure:        £75
+- Processing (550 scans):      £27
+- Manufacturing materials:     £XXk
+- Labor (monitoring):          £XXk
+Total Monthly Costs:           £XXk
 
-Revenue scenarios:
-- 10 Starter subs:         £290/month
-- 5 Professional subs:     £495/month
-- 2 Enterprise subs:       £798/month
-Margin: 85-90%
+Net Monthly Profit:            £XXk (XX% margin)
 ```
 
 ---
@@ -431,27 +525,49 @@ chore: Update dependencies
 
 ## 🎯 Roadmap
 
-### Phase 1: MVP (Current)
-- ✅ Multi-image photogrammetry (COLMAP)
-- ✅ Parametric CAD output (Point2CAD)
-- ✅ Three subscription tiers
-- ✅ Quota/rate limit management
-- ✅ Stripe subscription payments
-- ✅ Basic admin dashboard
+### Phase 1: MVP - Core Scanning & FDM (Months 1-3)
+- ✅ COLMAP + Point2CAD pipeline (8-14 min processing)
+- ✅ Multi-image upload (20-50 photos)
+- ✅ Dual output: STL (FDM) + STEP (CNC/CFC)
+- ✅ FDM integration via OctoPrint
+- ✅ Basic 3D preview and project dashboard
+- ✅ Payment & project management (Medusa.js)
+- 🎯 **Launch**: FDM-only prototyping service
 
-### Phase 2: Enhancement (Month 3-6)
-- 🔄 CAD refinement optimization (DeepCAD tuning)
+### Phase 2: Add SLS & Manufacturing Intelligence (Months 3-6)
+- 🔄 SLS printer integration + post-processing workflow
+- 🔄 AI manufacturing recommendations (geometry analysis)
+- 🔄 Dimensional analysis & tolerance checking
 - 🔄 Advanced mesh repair pipeline
-- 🔄 MiCADangelo integration (when released)
-- 🔄 Mobile app for photo capture
-- 🔄 API marketplace
+- 🔄 Mobile app for guided photo capture
+- 🔄 Manufacturing queue dashboard
+- 🎯 **Launch**: FDM + SLS service tiers
 
-### Phase 3: Scale (Month 6-12)
-- 🔄 White-label solutions
-- 🔄 Enterprise features
-- 🔄 Advanced CAD editing tools
-- 🔄 International expansion
-- 🔄 Batch processing
+### Phase 3: CFC & CNC Integration (Months 6-9)
+- 🔄 CFC printer integration with fiber path planning assistance
+- 🔄 CNC machine integration with CAM workflow
+- 🔄 STEP file editing guidance for users
+- 🔄 Material selection recommendations
+- 🔄 Advanced CAD refinement tools
+- 🔄 Batch processing for repeat orders
+- 🎯 **Launch**: Full manufacturing suite (FDM/SLS/CFC/CNC)
+
+### Phase 4: Scale & Advanced Features (Months 9-12)
+- 🔄 Multi-scanner setup (handle multiple RTX 3090s)
+- 🔄 Advanced quality prediction ML model
+- 🔄 White-label solutions for other R&D facilities
+- 🔄 API marketplace for third-party integrations
+- 🔄 Design optimization suggestions
+- 🔄 International facility partnerships
+- 🎯 **Goal**: 500+ scans/month, 85%+ automation
+
+### Future Enhancements (Year 2+)
+- MiCADangelo integration (when available November 2025+)
+- In-browser STEP editor for CFC/CNC refinement
+- AR preview for scale validation
+- Automated fiber orientation for CFC
+- Generative design suggestions
+- Multi-material recommendations
 
 ---
 

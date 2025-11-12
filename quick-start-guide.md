@@ -1,8 +1,10 @@
-# 🚀 Quick Start Guide - 3D Print MVP
+# 🚀 Quick Start Guide - R&D Manufacturing Platform
 
-## For Claude.ai/code Web Version
+## Overview
 
-This guide will help you set up the project structure using Claude Code web version, then continue with local development on Fedora.
+This guide covers setting up the complete scan-to-manufacturing platform with COLMAP + Point2CAD processing and FDM/SLS/CFC/CNC integration.
+
+**What you're building**: An R&D platform where users scan prototypes (20-50 photos) and get manufactured parts via FDM, SLS, CFC, or CNC.
 
 ---
 

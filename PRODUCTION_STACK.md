@@ -1,30 +1,40 @@
-# 🏗️ Production Stack - 3D Print MVP
+# 🏗️ Production Stack - R&D Manufacturing Platform
 
 **Updated**: November 12, 2025
 **Status**: Validated & Ready for Implementation
-**Approach**: Multi-Image Photogrammetry → Parametric CAD
+**Approach**: Multi-Image Photogrammetry → Parametric CAD → Integrated Manufacturing
+**Manufacturing**: FDM, SLS, CFC (Continuous Fiber Composite), CNC
 
 ---
 
 ## 📊 Executive Summary
 
-This document defines the **final production technology stack** for the 3D Print MVP, based on comprehensive validation of licensing, technical capabilities, and business requirements.
+This document defines the **final production technology stack** for the R&D manufacturing platform, validated for commercial use with comprehensive manufacturing integration (FDM/SLS/CFC/CNC).
+
+### Platform Overview
+
+**Business Model**: Integrated scan-to-manufacturing R&D facility
+- Users scan prototypes (20-50 photos from smartphone)
+- Platform processes with COLMAP + Point2CAD (8-14 min)
+- Users choose manufacturing method: FDM, SLS, CFC, or CNC
+- Platform manages complete workflow from scan to finished part
 
 ### Key Decision: Photogrammetry Over AI
 
-**Why we chose traditional photogrammetry:**
-- ✅ Manufacturing-grade precision (not AI hallucination)
-- ✅ Utilizes all 20-50 images effectively
-- ✅ Parametric CAD output (STEP files for editing)
-- ✅ All permissive licenses (Apache 2.0, BSD, MIT)
-- ✅ Proven industrial workflow
+**Why traditional photogrammetry (COLMAP) for R&D manufacturing:**
+- ✅ **Manufacturing-grade precision**: Required for FDM/SLS/CFC/CNC (not AI hallucination)
+- ✅ **Utilizes all 20-50 images**: Better accuracy for functional prototypes
+- ✅ **Dual output**: STL for FDM/SLS (80% auto-ready), STEP for CFC/CNC (manual refinement)
+- ✅ **COLMAP over Meshroom**: 30-50% faster, better CLI automation, BSD license
+- ✅ **RTX 3090 capacity**: 4-6 scans/hour, 50-80 scans/day (sufficient for R&D facility)
+- ✅ **All permissive licenses**: Apache 2.0, BSD, MIT (no commercial restrictions)
+- ✅ **Proven industrial workflow**: Used in automotive, aerospace, manufacturing R&D
 
-**Why we rejected single-image AI models:**
-- ❌ TRELLIS: Not photorealistic enough
-- ❌ Wonder3D++: Too new (Dec 2024), untested
-- ❌ Hunyuan3D-2: Geographic restriction (blocked in UK)
-- ❌ InstantMesh: Known quality limitations
-- ❌ Throws away valuable multi-view data
+**Why we rejected AI-only approaches:**
+- ❌ Single-image models insufficient for manufacturing tolerances
+- ❌ Cannot generate editable STEP files for CNC/CFC
+- ❌ Throws away valuable multi-view geometric data
+- ❌ Limited control over output quality and dimensions
 
 ---
 
@@ -216,54 +226,199 @@ At 100 models/month:
 
 ---
 
+## 🏭 Manufacturing Integration Stack
+
+### Supported Manufacturing Methods
+
+| Method | Description | Automation Level | Output Format | Platform Integration |
+|--------|-------------|------------------|---------------|---------------------|
+| **FDM** | Fused Deposition Modeling | Fully automated | STL | OctoPrint API (auto-queue) |
+| **SLS** | Selective Laser Sintering | Semi-automated | STL | Custom queue + post-processing |
+| **CFC** | Continuous Fiber Composite | Manual refinement | STEP | STEP export + fiber planning |
+| **CNC** | CNC Machining | Manual refinement | STEP | STEP export + CAM assistance |
+
+### Output Strategy
+
+**For FDM/SLS (80% of use cases)**:
+```
+COLMAP → Point2CAD → STEP → Mesh conversion → STL (validated, print-ready)
+                                                ↓
+                                        FDM: Auto-queue to OctoPrint
+                                        SLS: Queue + post-processing workflow
+```
+
+**For CFC/CNC (20% of use cases requiring precision)**:
+```
+COLMAP → Point2CAD → STEP (parametric CAD) → Export with dimensions
+                                             ↓
+                        CFC: User refines fiber paths → Queue
+                        CNC: User plans CAM toolpaths → Queue
+```
+
+### Manufacturing Workflow Integration
+
+```
+Platform Decision Tree:
+
+User uploads scan → COLMAP processing (5-8 min) → Point2CAD (3-5 min)
+                                                    ↓
+                                          Preview + AI recommendation
+                                                    ↓
+                        ┌───────────────────────────┴───────────────────────────┐
+                        │                                                       │
+                    User selects manufacturing method                           │
+                        │                                                       │
+        ┌───────────────┼───────────────┬───────────────┬──────────────────┐   │
+        │               │               │               │                  │   │
+      FDM             SLS             CFC             CNC          Just Download│
+        │               │               │               │                  │   │
+  Auto-queue    Queue + manual   Export STEP    Export STEP        STEP + STL │
+  (OctoPrint)   post-process     User refines   User CAM plans              │   │
+        │               │         fiber paths    toolpaths                  │   │
+        ↓               ↓               ↓               ↓                  ↓   │
+  Same day        1-2 days        2-3 days        1-2 days           No mfg │
+  delivery        delivery        delivery        delivery                    │
+                                                                              │
+                                                                    Archive for
+                                                                    later use
+```
+
+---
+
 ## 🔄 Complete Processing Pipeline
 
 ```
 User Flow:
-1. User logs in → Check subscription tier
-2. Check quota → Has remaining models?
-3. Upload 20-50 images → Validate count and quality
-4. Submit job → Queue in Redis
-5. Deduct from quota → Update database
+1. User creates project → Upload 20-50 images
+2. Validate image quality and count → Submit for processing
+3. Job queued in Redis → User receives estimate
+4. Monitor real-time status → View 3D preview when ready
 
 Processing Flow:
-1. RunPod cold start → Pull Docker container
-2. Download images from R2 → Local storage
-3. Run COLMAP → Generate point cloud (10-15 min)
+1. Processing server (RTX 3090) picks up job
+2. Images downloaded from R2 → Local SSD
+3. Run COLMAP → Generate point cloud (5-8 min)
 4. Run Point2CAD → Extract CAD primitives (3-5 min)
-5. Run DeepCAD → Refine sequence (1-2 min)
-6. Export STEP + STL → Upload to R2
-7. Notify user → Email + dashboard notification
+5. Mesh validation & repair → Ensure printability
+6. Dual export:
+   - STL (for FDM/SLS) → Validated and repaired
+   - STEP (for CFC/CNC) → With dimensional data
+7. Upload outputs to R2 → Notify user
+8. User reviews 3D preview → Gets AI manufacturing recommendations
 
-Total Time: 15-20 minutes per model
+Manufacturing Selection Flow:
+1. User selects manufacturing method based on:
+   - AI recommendations (geometry analysis)
+   - Dimensional requirements
+   - Material properties needed
+   - Turnaround time constraints
+   - Budget
+2. Platform routes to appropriate queue:
+   - FDM: Immediate auto-queue to OctoPrint
+   - SLS: Manual queue with post-processing schedule
+   - CFC: User downloads STEP, refines, re-uploads, queues
+   - CNC: User downloads STEP, CAM plans, re-uploads, queues
+
+Total Time:
+- Scanning: 5-10 min (user)
+- Processing: 8-14 min (automated)
+- FDM: 4-8 hours (same day)
+- SLS: 1-2 days
+- CFC: 2-3 days (includes user CAD work)
+- CNC: 1-2 days (includes user CAM work)
 ```
 
 ---
 
 ## 💰 Pricing & Business Model
 
-### Subscription Tiers
+### R&D Platform Pricing (Scan + Manufacturing)
 
-| Tier | Price/Month | Quota | Rate Limit | Cost per Model | Margin |
-|------|-------------|-------|------------|----------------|--------|
-| **Starter** | £29 | 50 models | 5/day | £0.58 | 90% |
-| **Professional** | £99 | 200 models | 25/day | £0.50 | 91% |
-| **Enterprise** | £399 | 1000 models | Unlimited | £0.40 | 92% |
+| Tier | What's Included | Turnaround | Est. Price* | Use Case |
+|------|-----------------|------------|------------|----------|
+| **FDM** | Scan + STL + FDM printing | Same day | £X | Quick prototypes, form/fit testing |
+| **SLS** | Scan + STL + SLS printing + post-process | 1-2 days | £3X | Functional testing, assemblies |
+| **CFC** | Scan + STEP + fiber planning consultation | 2-3 days | £10X | End-use parts, high strength |
+| **CNC** | Scan + STEP + CAM assistance | 1-2 days | £12X | Precision machining, tight tolerances |
 
-### Overage Pricing
-- **£0.60 per additional model** beyond quota
-- Automatically charged at end of billing cycle
-- Prevents service interruption
+*Prices depend on your actual manufacturing costs (materials, time, labor)
 
-### Cost Breakdown (per model)
+### Subscription Discounts (Optional)
+- **Monthly Plan (£XX/month)**: 20% discount on all scans
+- **Annual Plan (£XXX/year)**: 35% discount on all scans
+- **Enterprise**: Custom pricing for high-volume R&D teams
+
+### Cost Structure (per scan)
+
+**Processing Costs (amortized)**:
 ```
-GPU Processing: £0.40-0.53
-Storage: £0.01
-Payment Processing: £0.03-0.12 (2.9% + £0.30 on subscription)
-Total Variable Cost: £0.44-0.66 per model
+GPU time (RTX 3090, 8-14 min):   ~£0.05/scan
+Storage (300MB avg):              ~£0.01/scan
+API/infrastructure:               ~£0.02/scan
+Payment processing:               2.9% + £0.30
+Total Processing Cost:            ~£0.08 + payment fees
+```
 
-Pricing: £0.40-0.60 (effective per model in subscription)
-Margin: 85-90%
+**Manufacturing Costs (your actual costs will vary)**:
+```
+FDM: Material + printer time + labor
+SLS: Material + printer time + post-processing + labor
+CFC: Material + printer time + fiber planning + labor
+CNC: Material + machine time + tooling + CAM + labor
+```
+
+**Pricing Strategy**:
+```
+Per-scan price = Processing (£0.08) + Manufacturing costs + Margin
+
+Example with 45% target margin:
+- If FDM manufacturing costs you £Y, price at £1.8Y + £0.08
+- If SLS costs £3Y, price at £5.4Y + £0.08
+- If CFC costs £10Y, price at £18Y + £0.08
+- If CNC costs £12Y, price at £22Y + £0.08
+```
+
+### Capacity Planning (RTX 3090)
+
+**Hardware**: NVIDIA RTX 3090 (24GB VRAM)
+**Processing Time**: 8-14 minutes per scan
+**Capacity**:
+```
+Theoretical Maximum:
+- 60 min / 11 min avg = 5.45 scans/hour
+- 5.45 × 8 hours = 43.6 scans/day
+- 43.6 × 22 days = 959 scans/month
+
+Realistic (50% utilization):
+- 25 scans/day
+- 550 scans/month
+
+Comfortable (30% utilization for launch):
+- 15 scans/day
+- 330 scans/month
+```
+
+**Revenue Projections (Conservative, 30% utilization)**:
+```
+330 scans/month mix:
+- 60% FDM (198 scans)
+- 30% SLS (99 scans)
+- 10% CFC/CNC (33 scans)
+
+Revenue depends on your pricing:
+- 198 × £X (FDM) = £XXk
+- 99 × £3X (SLS) = £XXk
+- 33 × £11X (CFC/CNC avg) = £XXk
+Total: £XXk/month
+
+Costs:
+- Fixed infrastructure: ~£100
+- Processing (330 scans): ~£26
+- Manufacturing: £YYk (depends on your costs)
+- Labor: £ZZk (monitoring, post-processing)
+Total Costs: £(100 + 26 + YY + ZZ)k
+
+Target 45% margin after all costs
 ```
 
 ---

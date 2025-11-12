@@ -1,50 +1,77 @@
-# 🎯 3D Print MVP - Project Overview
+# 🎯 R&D Platform - Project Overview
 
 ## Executive Summary
 
-**Project**: Professional Photogrammetry-to-CAD Service
-**Target Launch**: 8-12 weeks from start
-**Technology**: COLMAP + Point2CAD + DeepCAD + Medusa.js + RunPod
-**Market**: Product designers, manufacturers, reverse engineering, 3D printing
-**Business Model**: Quota-based SaaS (£29-£399/month subscriptions)
+**Project**: Scan-to-Manufacturing R&D Platform
+**Target Launch**: 8-12 weeks from start (FDM tier), 6-9 months for full suite
+**Technology**: COLMAP + Point2CAD + RTX 3090 + FDM/SLS/CFC/CNC Integration
+**Market**: Product developers, engineers, R&D teams, manufacturers
+**Business Model**: Pay-per-scan with manufacturing (£X-£10X per scan) + subscription discounts
 
 ---
 
 ## The Problem
 
-Creating 3D printable models from physical objects requires:
-- ❌ Expensive 3D scanners (£300-£3000)
-- ❌ Complex CAD software expertise
-- ❌ Manual photogrammetry (hours of work)
-- ❌ Professional service (£50-£200 per model)
+Rapid prototyping from concept to physical part is fragmented and slow:
+- ❌ **Disconnected workflows**: Scan → CAD → Manufacturing are separate services
+- ❌ **Limited method selection**: Most facilities offer only one manufacturing method
+- ❌ **Expensive 3D scanning**: Professional scanners cost £300-£3000
+- ❌ **Manual CAD work**: Hours of modeling for simple prototypes
+- ❌ **Slow iteration**: Days-weeks between design changes and physical testing
 
-**Result**: High barrier to entry for casual users
+**Result**: R&D teams waste time and money on fragmented prototyping workflows
 
 ---
 
 ## Our Solution
 
-**Turn multi-angle smartphone photos into parametric CAD files using professional photogrammetry**
+**Complete scan-to-manufacturing platform: One scan → Multiple manufacturing options → Finished parts**
 
-### Three Subscription Tiers
+### Integrated Manufacturing Methods
 
-| Tier | Monthly Quota | Processing Time | Price/Month | Rate Limit | Output |
-|------|---------------|-----------------|-------------|------------|--------|
-| **Starter** | 50 models | 15-20 min | £29 | 5/day | STEP + STL |
-| **Professional** | 200 models | 15-20 min | £99 | 25/day | STEP + STL |
-| **Enterprise** | 1000 models | 15-20 min | £399 | Unlimited | STEP + STL |
+| Method | Turnaround | Automation | Best For | Ready State |
+|--------|------------|------------|----------|-------------|
+| **FDM** | Same day | Fully automated | Quick prototypes | STL → Auto-queue |
+| **SLS** | 1-2 days | Semi-automated | Functional testing | STL + post-process |
+| **CFC** | 2-3 days | Manual refinement | End-use parts | STEP + fiber planning |
+| **CNC** | 1-2 days | Manual refinement | Precision parts | STEP + CAM planning |
 
-**All tiers require 20-50 multi-angle photos per model**
+**Single scan (20-50 photos) → All manufacturing options available**
+
+### Platform Workflow
+
+```
+1. SCAN (5-10 min)
+   └─ User captures prototype with phone camera (20-50 images)
+
+2. PROCESS (8-14 min automated)
+   ├─ COLMAP photogrammetry (5-8 min)
+   ├─ Point2CAD CAD reconstruction (3-5 min)
+   └─ Dual output: STL (FDM/SLS) + STEP (CFC/CNC)
+
+3. REVIEW & SELECT
+   ├─ 3D preview in browser
+   ├─ AI manufacturing recommendations
+   ├─ Dimensional analysis & tolerance check
+   └─ Choose manufacturing method
+
+4. MANUFACTURE
+   ├─ FDM: Auto-queue → Same day delivery
+   ├─ SLS: Queue → 1-2 days
+   ├─ CFC: Export STEP → User refines → 2-3 days
+   └─ CNC: Export STEP → User CAM plans → 1-2 days
+```
 
 ### Key Innovation
 
-**Manufacturing-Grade Photogrammetry**:
-1. Traditional photogrammetry (not AI hallucination)
-2. Parametric CAD output (STEP files for editing)
-3. Quota-based predictable pricing
-4. Professional-grade accuracy for reverse engineering
+**One Platform, Complete Workflow**:
+1. ✅ **Single scan, multiple outputs**: FDM/SLS get ready STL, CFC/CNC get editable STEP
+2. ✅ **AI manufacturing recommendations**: Platform analyzes geometry and suggests optimal method
+3. ✅ **Integrated queue management**: All machines managed from one dashboard
+4. ✅ **Flexible pricing**: Pay per scan + manufacturing, or subscription for discounts
+5. ✅ **Traditional photogrammetry**: Manufacturing-grade precision, not AI hallucination
 
-**Result**: Predictable costs, scalable for businesses, manufacturing precision
+**Result**: R&D teams iterate 10x faster with complete scan-to-part workflow
 
 ---
 
@@ -53,43 +80,46 @@ Creating 3D printable models from physical objects requires:
 ### Core Pipeline
 
 ```
-20-50 Photos → COLMAP → Point Cloud → Point2CAD → DeepCAD → STEP + STL
-               15-20 min  Sparse+Dense  CAD Primitives  Refinement  Download
+20-50 Photos → COLMAP → Point Cloud → Point2CAD → STEP + STL → Manufacturing
+   User         5-8 min   Sparse+Dense   3-5 min      Dual Output   Method Choice
 ```
 
 ### Why This Stack?
 
 #### COLMAP (ETH Zurich & UNC Chapel Hill)
-- **Input**: 20-50 multi-angle photos
+- **Input**: 20-50 multi-angle photos from smartphone
 - **Output**: Dense point clouds via Structure-from-Motion
-- **Speed**: 10-15 minutes on GPU
+- **Speed**: 5-8 minutes on RTX 3090 (24GB VRAM)
 - **License**: BSD 3-Clause (commercial friendly)
 - **Quality**: Industry-standard photogrammetry
+- **Why over Meshroom**: 30-50% faster, better CLI automation, preferred for production
 
 #### Point2CAD (PRS Lab, ETH Zurich)
-- **Input**: Point clouds from COLMAP
-- **Output**: Parametric CAD primitives (B-rep)
-- **Speed**: 3-5 minutes
-- **License**: Apache 2.0 (changed March 2024)
-- **Quality**: Manufacturing-grade accuracy
+- **Input**: Dense point clouds from COLMAP
+- **Output**: Parametric CAD (B-rep) as STEP files
+- **Speed**: 3-5 minutes on RTX 3090
+- **License**: Apache 2.0 (changed March 2024 - verified ✅)
+- **Quality**: Manufacturing-grade CAD primitives
+- **Output**: Editable STEP for CFC/CNC, convertible to STL for FDM/SLS
 
-#### DeepCAD (Optional Refinement)
-- **Purpose**: Optimize CAD sequence
-- **Speed**: 1-2 minutes
+#### Local GPU Infrastructure (RTX 3090)
+- **VRAM**: 24GB (sufficient for all processing)
+- **Capacity**: 4-6 scans/hour, 50-80 scans/day at 50% utilization
+- **Cost**: One-time hardware investment, amortized per scan
+- **Reliability**: Local control, no cloud dependencies
+- **Why local over RunPod**: Lower long-term costs, data privacy, instant availability
+
+#### Medusa.js (Platform Management)
+- **Purpose**: Project management, billing, user accounts
+- **Flexibility**: Fully customizable for manufacturing workflows
 - **License**: MIT
-- **Quality**: Improves design consistency
+- **Features**: Order management, payment processing, admin dashboard
 
-#### Medusa.js (E-commerce)
-- **Purpose**: Subscriptions, quotas, usage tracking
-- **Flexibility**: Fully customizable
-- **License**: MIT
-- **Ecosystem**: Rich plugin ecosystem
-
-#### RunPod (GPU Cloud)
-- **Model**: Serverless, pay-per-use
-- **Cost**: $0.40-0.53 per model
-- **Scale**: Auto-scaling
-- **Hardware**: NVIDIA A40/A100 GPUs
+#### Manufacturing Queue Management
+- **FDM**: OctoPrint API integration (fully automated)
+- **SLS**: Custom queue with post-processing workflow
+- **CFC**: Manual queue with STEP file export and consultation
+- **CNC**: Manual queue with CAM planning assistance
 
 ### System Diagram
 
@@ -118,47 +148,70 @@ Creating 3D printable models from physical objects requires:
 
 ### Target Markets
 
-**Primary**: 
-- Hobbyist 3D printer owners (2M+ globally)
-- Product designers and makers
-- Educational institutions
+**Primary (R&D Facilities & Product Development)**:
+- Engineering teams needing rapid prototyping
+- Product development companies
+- Manufacturing R&D departments
+- Industrial design studios
+- Startups building physical products
 
 **Secondary**:
-- E-commerce sellers (product photos → 3D models)
-- AR/VR content creators
-- Game developers
+- Educational institutions (engineering programs)
+- Maker spaces and tech hubs
+- Independent inventors and entrepreneurs
+- Small manufacturing businesses
 
-### Market Size
+### Market Size & Positioning
 
-- **Addressable Market**: $500M+ (3D printing services)
-- **Our Niche**: Photo-to-STL automation
-- **Competitive Advantage**: 10x faster, 80% cheaper
+- **Addressable Market**: $2B+ (rapid prototyping & manufacturing services)
+- **Our Niche**: Integrated scan-to-manufacturing platform
+- **Competitive Advantage**:
+  - Single scan → multiple manufacturing options (vs fragmented workflows)
+  - 10x faster iteration (vs traditional CAD + separate manufacturing)
+  - 60-80% cost savings (vs outsourced scanning + separate manufacturing)
 
 ### Revenue Projections
 
-**Year 1 (Conservative)**:
+**Year 1 (Conservative - FDM focus)**:
 ```
-Month 1-3:   10 subscribers  → £500/month
-Month 4-6:   30 subscribers  → £1,500/month
-Month 7-9:   60 subscribers  → £3,000/month
-Month 10-12: 100 subscribers → £5,000/month
+Capacity: 50-80 scans/day @ 50% = 25-40 scans/day
+Monthly: 25 scans/day × 22 days = 550 scans/month
 
-Year 1 Total: £20-30K MRR growth
-Average LTV: £600-1,200 per customer
+Month 1-3 (Ramp-up, 30% capacity):
+  165 scans/month @ £X avg = £XXk/month
+
+Month 4-6 (Growth, 50% capacity):
+  275 scans/month @ £X avg = £XXk/month
+
+Month 7-9 (Stable, 70% capacity):
+  385 scans/month @ £X avg = £XXk/month
+
+Month 10-12 (Add SLS, 80% capacity):
+  440 scans/month @ £1.5X avg = £XXk/month
+
+Year 1 Total: £XX-XXk MRR growth
 ```
 
-**Year 2 (Growth)**:
+**Year 2 (Add CFC/CNC)**:
 ```
-500 subscribers → £25K/month → £300K ARR
-Churn rate: <10%/month (target)
-Margin: 85-90% (predictable costs)
+Full suite operational (FDM/SLS/CFC/CNC)
+Capacity: 80% utilization = 440 scans/month
+
+Revenue mix:
+- 60% FDM:      264 scans @ £X    = £XXk
+- 25% SLS:      110 scans @ £3X   = £XXk
+- 10% CFC:      44 scans  @ £10X  = £XXk
+- 5% CNC:       22 scans  @ £12X  = £XXk
+Total Monthly Revenue: £XXk/month → £XXXk ARR
+
+Margin: 45-55% (including manufacturing costs)
 ```
 
 **Key Metrics**:
-- Customer Acquisition Cost (CAC): £50-100
-- Lifetime Value (LTV): £600-1,200
-- LTV:CAC Ratio: 6-12:1 (healthy)
-- Payback Period: 2-3 months
+- Average Transaction Value (ATV): £X-£10X per scan+manufacturing
+- Customer Acquisition Cost (CAC): £100-200
+- Repeat Rate: 40-60% (R&D teams iterate frequently)
+- Payback Period: 2-4 scans
 
 ---
 
@@ -187,29 +240,42 @@ Margin: 85-90% (predictable costs)
 
 ### Revenue Streams
 
-**1. Subscription Tiers (Primary)**
-- Starter: £29/month (50 models, 5/day rate limit)
-- Professional: £99/month (200 models, 25/day rate limit)
-- Enterprise: £399/month (1000 models, unlimited rate limit)
+**1. Scan + Manufacturing (Primary)**
+- **FDM Tier**: £X per scan+print (same day turnaround)
+- **SLS Tier**: £3X per scan+print (1-2 day turnaround)
+- **CFC Tier**: £10X per scan+STEP export+consultation (2-3 day turnaround)
+- **CNC Tier**: £12X per scan+STEP export+CAM assistance (1-2 day turnaround)
 
-**2. Overage Charges (Secondary)**
-- £0.60 per additional model beyond quota
-- Automatically charged at end of billing cycle
+**2. Subscription Discounts (Secondary)**
+- **Monthly Plan**: 20% discount on all scans (£XX/month minimum)
+- **Annual Plan**: 35% discount on all scans (£XXX/year minimum)
+- **Enterprise**: Custom pricing for high-volume R&D teams
 
-**3. API Access (Future)**
-- £149/month base + £0.40 per API call
-- Enterprise custom pricing
+**3. Additional Services (Future)**
+- Design iteration packages (multiple scans of same prototype)
+- CAD refinement service (human-in-the-loop for CFC/CNC)
+- Rush processing (premium for faster turnaround)
+- Material consultation and recommendations
 
 ### Cost Structure
 
-**Fixed Costs** (~£75/month):
-- Railway (API + Database): £50/month
-- Cloudflare R2 (Storage): £25/month (multi-image storage)
-- Monitoring (Sentry): £0 (free tier)
+**Fixed Costs** (~£100/month):
+- API Hosting (Railway/VPS): £50/month
+- Storage (Cloudflare R2): £30/month (multi-image + outputs)
+- Monitoring & Analytics: £20/month
+- Software licenses: Included (all open-source)
 
-**Variable Costs**:
-- RunPod GPU: £0.40-0.53 per model (15-20 min processing)
-- Payment processing: 2.9% + £0.30 (monthly subscription)
+**Variable Costs per Scan**:
+- Processing (GPU amortization): ~£0.05/scan (RTX 3090)
+- Storage (300MB per scan): ~£0.01/scan
+- Payment processing: 2.9% + £0.30
+- **Manufacturing costs** (estimated, you'll need to refine):
+  - FDM material + time: £Y
+  - SLS material + time: £3Y
+  - CFC material + time + consultation: £8Y
+  - CNC material + time + CAM: £10Y
+
+**Total Variable Cost**: £0.06 (processing) + Manufacturing + Payment fees
 
 **Example P&L** (Conservative: 20 subscribers):
 ```
